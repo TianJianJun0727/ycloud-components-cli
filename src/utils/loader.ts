@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { join } from "path";
+import type { MetaData, Component } from "../types";
 
 function getProjectVersion(): string | null {
   try {
@@ -29,9 +30,34 @@ function getLatestVersion(): string {
   return versions.sort().reverse()[0] || "1.0.0";
 }
 
-export function loadComponentData(version?: string) {
+export function loadMetaDataForVersion(version?: string): MetaData {
   const targetVersion = version || getProjectVersion() || getLatestVersion();
   const filePath = join(__dirname, `v${targetVersion}.json`);
-  const data = JSON.parse(readFileSync(filePath, "utf-8"));
-  return data.components;
+  const result = JSON.parse(readFileSync(filePath, "utf-8"));
+  if (!result) {
+    console.error(`Version ${version} not found`);
+    process.exit(1);
+  }
+  return result;
+}
+
+export function loadComponents(version?: string): Component[] {
+  const components = loadMetaDataForVersion(version)?.components;
+  if (!components) return [];
+  return components;
+}
+
+export function loadComponentForSpec(
+  componentName: string,
+  version?: string,
+): Component {
+  const components = loadComponents(version);
+  const component = components.find(
+    (component) => component.name === componentName,
+  );
+  if (!component) {
+    console.error(`Component ${componentName} not found in version ${version}`);
+    process.exit(1);
+  }
+  return component;
 }

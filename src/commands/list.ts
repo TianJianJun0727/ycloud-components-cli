@@ -1,19 +1,29 @@
-import { loadComponentData } from "../utils/loader";
+import { loadComponents } from "../utils/loader";
 
 export function listCommand(options: { format?: string; version?: string }) {
   const version = options.version;
-  const components = loadComponentData(version);
 
-  if (!components) {
-    console.error(`Version ${version} not found`);
+  const components = loadComponents(version);
+
+  if (components.length === 0) {
+    if (options.format === "json") {
+      console.log(JSON.stringify([], null, 2));
+    } else {
+      console.log("No component data available.");
+    }
+    return;
+  }
+
+  if (components.length === 0) {
+    console.error(`No components found in version ${version}`);
     process.exit(1);
   }
 
-  const componentList = Object.keys(components).map((name) => ({
-    name,
-    nameZh: components[name].nameZh,
-    description: components[name].description,
-    descriptionZh: components[name].descriptionZh,
+  const componentList = components.map((c) => ({
+    name: c.name,
+    nameZh: c.nameZh,
+    description: c.description,
+    descriptionZh: c.descriptionZh,
   }));
 
   if (options.format === "json") {

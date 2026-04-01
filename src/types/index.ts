@@ -27,9 +27,7 @@ export interface Component {
   semantics: ComponentSemantic[];
 }
 
-export interface ComponentData {
+export interface MetaData {
   version: string;
-  components: {
-    [componentName: string]: Component;
-  };
+  components: Component[];
 }
