@@ -1,4 +1,5 @@
 import { loadComponents } from "../utils/loader";
+import { output, OutputFormat } from "../utils/output";
 
 export function listCommand(options: { format?: string; version?: string }) {
   const version = options.version;
@@ -26,9 +27,5 @@ export function listCommand(options: { format?: string; version?: string }) {
     descriptionZh: c.descriptionZh,
   }));
 
-  if (options.format === "json") {
-    console.log(JSON.stringify(componentList, null, 2));
-  } else {
-    componentList.forEach((c) => console.log(`${c.name}: ${c.description}`));
-  }
+  output(componentList, options.format as OutputFormat);
 }

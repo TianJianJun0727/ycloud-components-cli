@@ -1,33 +1,32 @@
-export interface ComponentProp {
+export type ComponentProp = {
   name: string;
   type: string;
   required: boolean;
   default?: string;
   description: string;
-}
+};
 
-export interface ComponentDemo {
+export type ComponentDemo = {
   name: string;
   code: string;
   description: string;
-}
+};
 
-export interface ComponentSemantic {
-  className: string;
-  description: string;
-}
-
-export interface Component {
+export type Component = {
   name: string;
   nameZh: string;
   description: string;
   descriptionZh: string;
   props: ComponentProp[];
   demos: ComponentDemo[];
-  semantics: ComponentSemantic[];
-}
+  whenToUse: string;
+  whenToUseZh: string;
+  faq?: { question: string; answer: string }[];
+  doc?: string;
+  docZh?: string;
+};
 
-export interface MetaData {
+export type MetaData = {
   version: string;
   components: Component[];
-}
+};

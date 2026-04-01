@@ -1,4 +1,5 @@
 import { loadComponentForSpec } from "../utils/loader";
+import { output, OutputFormat } from "../utils/output";
 
 export function demoCommand(
   componentName: string,
@@ -12,15 +13,8 @@ export function demoCommand(
 
   if (!demo) {
     console.error(`Demo ${demoName} not found for ${componentName}`);
-    process.exit(1);
+    return;
   }
 
-  if (options.format === "json") {
-    console.log(JSON.stringify(demo, null, 2));
-  } else {
-    console.log(`Demo: ${demo.name}`);
-    console.log(`Description: ${demo.description}`);
-    console.log("\nCode:");
-    console.log(demo.code);
-  }
+  output(demo, options.format as OutputFormat);
 }

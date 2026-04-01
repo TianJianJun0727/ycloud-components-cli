@@ -1,4 +1,5 @@
 import { loadComponentForSpec } from "../utils/loader";
+import { output, OutputFormat } from "../utils/output";
 
 export function infoCommand(
   componentName: string,
@@ -6,24 +7,5 @@ export function infoCommand(
 ) {
   const version = options.version;
   const component = loadComponentForSpec(componentName, version);
-
-  const info = {
-    name: component.name,
-    description: component.description,
-    props: component.props,
-  };
-
-  if (options.format === "json") {
-    console.log(JSON.stringify(info, null, 2));
-  } else {
-    console.log(`Component: ${info.name}`);
-    console.log(`Description: ${info.description}`);
-    console.log("\nProps:");
-    info.props.forEach((prop) => {
-      console.log(
-        `  - ${prop.name}: ${prop.type}${prop.required ? " (required)" : ""}`,
-      );
-      console.log(`    ${prop.description}`);
-    });
-  }
+  output(component, options.format as OutputFormat);
 }
