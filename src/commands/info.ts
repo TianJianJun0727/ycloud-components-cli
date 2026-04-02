@@ -1,10 +1,19 @@
+import type { CommandModule } from "yargs";
 import { loadComponentForSpec } from "../utils/loader";
 import { output, OutputFormat } from "../utils/output";
+import { cmdCommonOptions } from "../constants";
+import type { CommonArgs } from "../types/commands";
 
-export function infoCommand(
-  componentName: string,
-  options: { format?: string },
-) {
-  const component = loadComponentForSpec(componentName);
-  output(component, options.format as OutputFormat);
-}
+export type InfoArgs = CommonArgs & {
+  component: string;
+};
+
+export const infoCmd: CommandModule<object, InfoArgs> = {
+  command: "info <component>",
+  describe: "Show component properties",
+  builder: cmdCommonOptions,
+  handler: (argv) => {
+    const component = loadComponentForSpec(argv.component);
+    output(component, argv.format as OutputFormat);
+  },
+};

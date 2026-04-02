@@ -32,3 +32,4 @@ export type MetaData = {
   version: string;
   components: Component[];
 };
+
