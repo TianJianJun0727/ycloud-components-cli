@@ -1,5 +1,6 @@
-import { readFileSync } from "fs";
-import { join } from "path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { COMPONENT_PACKAGE_NAME } from "../constants";
 
 export async function checkVersion() {
   try {
@@ -35,7 +36,7 @@ export function displayVersionInfo(info: {
   if (info.hasUpdate) {
     console.log(`\n🎉 New version available: ${info.latestVersion}`);
     console.log(
-      `\n💡 Update now: npm install -g @ycloud/components-cli@latest\n`,
+      `\n💡 Update now: npm install -g ${COMPONENT_PACKAGE_NAME}@latest\n`,
     );
   }
 }

@@ -1,62 +1,63 @@
-import { readFileSync, readdirSync, existsSync } from "fs";
-import { join } from "path";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { error, ErrorCode } from "./error";
+import { getPackageRootPath } from "./tools";
 import type { MetaData, Component } from "../types";
+import { COMPONENT_PACKAGE_NAME } from "../constants";
 
-function getProjectVersion(): string | null {
-  try {
-    const pkgPath = join(process.cwd(), "package.json");
-    if (!existsSync(pkgPath)) return null;
+let metadataCache: MetaData | null = null;
 
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-    const version =
-      pkg.dependencies?.["@ycloud/components"] ||
-      pkg.devDependencies?.["@ycloud/components"];
+export function loadMetadata(): MetaData {
+  if (metadataCache) return metadataCache;
 
-    if (version) {
-      return version.replace(/^[\^~]/, "");
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+  const pkgRoot = getPackageRootPath(COMPONENT_PACKAGE_NAME);
 
-function getLatestVersion(): string {
-  const dataDir = join(__dirname);
-  const files = readdirSync(dataDir).filter(
-    (f) => f.startsWith("v") && f.endsWith(".json"),
-  );
-  const versions = files.map((f) => f.replace(/^v/, "").replace(/\.json$/, ""));
-  return versions.sort().reverse()[0] || "1.0.0";
-}
-
-export function loadMetaDataForVersion(version?: string): MetaData {
-  const targetVersion = version || getProjectVersion() || getLatestVersion();
-  const filePath = join(__dirname, `v${targetVersion}.json`);
-  const result = JSON.parse(readFileSync(filePath, "utf-8"));
-  if (!result) {
-    console.error(`Version ${version} not found`);
+  if (!pkgRoot) {
+    error({
+      code: ErrorCode.COMPONENTS_NOT_FOUND,
+      message: `${COMPONENT_PACKAGE_NAME} package not found. Please install it first.`,
+    });
     process.exit(1);
   }
+
+  const filePath = join(pkgRoot, "metadata", "index.json");
+
+  if (!existsSync(filePath)) {
+    error({
+      code: ErrorCode.METADATA_FILE_NOT_FOUND,
+      message: `Metadata file not found: ${filePath}`,
+    });
+    process.exit(1);
+  }
+
+  const result = JSON.parse(readFileSync(filePath, "utf-8"));
+  if (!result) {
+    error({
+      code: ErrorCode.METADATA_NOT_ERROR,
+      message: `${COMPONENT_PACKAGE_NAME} doc metadata not found`,
+    });
+    process.exit(1);
+  }
+  metadataCache = result;
   return result;
 }
 
-export function loadComponents(version?: string): Component[] {
-  const components = loadMetaDataForVersion(version)?.components;
+export function loadComponents(): Component[] {
+  const components = loadMetadata()?.components;
   if (!components) return [];
   return components;
 }
 
-export function loadComponentForSpec(
-  componentName: string,
-  version?: string,
-): Component {
-  const components = loadComponents(version);
+export function loadComponentForSpec(componentName: string): Component {
+  const components = loadComponents();
   const component = components.find(
     (component) => component.name === componentName,
   );
   if (!component) {
-    console.error(`Component ${componentName} not found in version ${version}`);
+    error({
+      code: ErrorCode.COMPONENT_NOT_FOUND,
+      message: `Component ${componentName} not found in metadata`,
+    });
     process.exit(1);
   }
   return component;

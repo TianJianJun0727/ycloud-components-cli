@@ -4,6 +4,8 @@ export type ComponentProp = {
   required: boolean;
   default?: string;
   description: string;
+  since?: string;
+  deprecated?: boolean | string;
 };
 
 export type ComponentDemo = {

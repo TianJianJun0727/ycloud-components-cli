@@ -3,9 +3,8 @@ import { output, OutputFormat } from "../utils/output";
 
 export function infoCommand(
   componentName: string,
-  options: { format?: string; version?: string },
+  options: { format?: string },
 ) {
-  const version = options.version;
-  const component = loadComponentForSpec(componentName, version);
+  const component = loadComponentForSpec(componentName);
   output(component, options.format as OutputFormat);
 }
