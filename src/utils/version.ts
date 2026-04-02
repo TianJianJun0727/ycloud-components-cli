@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { COMPONENT_PACKAGE_NAME } from "../constants";
+import { COMPONENT_PACKAGE_NAME, NPM_REGISTRY_URL } from "../constants";
 
 export async function checkVersion() {
   try {
@@ -8,7 +8,7 @@ export async function checkVersion() {
     const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
     const currentVersion = pkg.version;
 
-    const response = await fetch(`https://registry.npmjs.org/${pkg.name}`);
+    const response = await fetch(`${NPM_REGISTRY_URL}/${pkg.name}`);
     if (!response.ok) return null;
 
     const data = await response.json();

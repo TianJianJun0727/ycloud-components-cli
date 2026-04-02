@@ -10,8 +10,10 @@ export type ComponentProp = {
 
 export type ComponentDemo = {
   name: string;
+  nameZh: string;
+  description?: string;
+  descriptionZh?: string;
   code: string;
-  description: string;
 };
 
 export type Component = {
@@ -19,10 +21,11 @@ export type Component = {
   nameZh: string;
   description: string;
   descriptionZh: string;
+  inheritMuiProps: string | null;
   props: ComponentProp[];
   demos: ComponentDemo[];
-  whenToUse: string;
-  whenToUseZh: string;
+  whenToUse?: string;
+  whenToUseZh?: string;
   faq?: { question: string; answer: string }[];
   doc?: string;
   docZh?: string;
@@ -30,6 +33,6 @@ export type Component = {
 
 export type MetaData = {
   version: string;
+  muiVersion: string;
   components: Component[];
 };
-

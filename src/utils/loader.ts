@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { error, ErrorCode } from "./error";
+import { ErrorCode, CLIError } from "./error";
 import { getPackageRootPath } from "./tools";
 import type { MetaData, Component } from "../types";
 import { COMPONENT_PACKAGE_NAME } from "../constants";
@@ -13,32 +13,34 @@ export function loadMetadata(): MetaData {
   const pkgRoot = getPackageRootPath(COMPONENT_PACKAGE_NAME);
 
   if (!pkgRoot) {
-    error({
-      code: ErrorCode.COMPONENTS_NOT_FOUND,
-      message: `${COMPONENT_PACKAGE_NAME} package not found. Please install it first.`,
-    });
-    process.exit(1);
+    throw new CLIError(
+      ErrorCode.COMPONENTS_NOT_FOUND,
+      `${COMPONENT_PACKAGE_NAME} package not found. Please install it first.`,
+    );
   }
 
   const filePath = join(pkgRoot, "metadata", "index.json");
 
   if (!existsSync(filePath)) {
-    error({
-      code: ErrorCode.METADATA_FILE_NOT_FOUND,
-      message: `Metadata file not found: ${filePath}`,
-    });
-    process.exit(1);
+    throw new CLIError(
+      ErrorCode.METADATA_FILE_NOT_FOUND,
+      `Metadata file not found: ${filePath}`,
+    );
   }
 
-  const result = JSON.parse(readFileSync(filePath, "utf-8"));
-  if (!result) {
-    error({
-      code: ErrorCode.METADATA_NOT_ERROR,
-      message: `${COMPONENT_PACKAGE_NAME} doc metadata not found`,
-    });
-    process.exit(1);
+  let result: MetaData;
+
+  try {
+    result = JSON.parse(readFileSync(filePath, "utf-8"));
+  } catch (error) {
+    throw new CLIError(
+      ErrorCode.METADATA_NOT_ERROR,
+      `${COMPONENT_PACKAGE_NAME} metadata not found`,
+    );
   }
+
   metadataCache = result;
+
   return result;
 }
 
@@ -53,12 +55,12 @@ export function loadComponentForSpec(componentName: string): Component {
   const component = components.find(
     (component) => component.name === componentName,
   );
+
   if (!component) {
-    error({
-      code: ErrorCode.COMPONENT_NOT_FOUND,
-      message: `Component ${componentName} not found in metadata`,
-    });
-    process.exit(1);
+    throw new CLIError(
+      ErrorCode.COMPONENT_NOT_FOUND,
+      `Component ${componentName} not found in metadata`,
+    );
   }
   return component;
 }
