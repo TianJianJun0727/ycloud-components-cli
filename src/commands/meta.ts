@@ -22,7 +22,7 @@ export const metaCmd: CommandModule<object, CommonArgs> = {
       const meta = getMetaInfo();
       output(meta, argv.format as OutputFormat);
     } catch (err) {
-      printError(err);
+      printError(err, argv.format);
     }
   },
 };

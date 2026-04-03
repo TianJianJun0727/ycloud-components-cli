@@ -24,7 +24,7 @@ export const listCmd: CommandModule<object, CommonArgs> = {
       const componentList = listComponents();
       output(componentList, argv.format as OutputFormat);
     } catch (err) {
-      printError(err);
+      printError(err, argv.format);
     }
   },
 };

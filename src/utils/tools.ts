@@ -1,5 +1,6 @@
 import { dirname, join } from "path";
 import { existsSync } from "fs";
+import { CLIError, ErrorCode } from "./error";
 
 export function getPackageRootPath(packageName: string) {
   try {
@@ -12,11 +13,18 @@ export function getPackageRootPath(packageName: string) {
       }
       const parentDir = dirname(currentDir);
       if (parentDir === currentDir) {
-        throw new Error(`未找到 ${packageName} 的 package.json`);
+        throw new CLIError(
+          ErrorCode.PACKAGE_PATH_ERROR,
+          `Cannot find package.json for ${packageName}`,
+        );
       }
       currentDir = parentDir;
     }
   } catch (err: any) {
-    throw new Error(`获取包路径失败：${err.message}`);
+    if (err instanceof CLIError) throw err;
+    throw new CLIError(
+      ErrorCode.COMPONENTS_NOT_FOUND,
+      `${packageName} package not found: ${err.message}`,
+    );
   }
 }

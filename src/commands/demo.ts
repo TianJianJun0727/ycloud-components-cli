@@ -34,7 +34,7 @@ export const demoCmd: CommandModule<object, DemoArgs> = {
       const demo = getComponentDemoCode(argv.component, argv.demoName);
       output(demo, argv.format as OutputFormat);
     } catch (err) {
-      printError(err);
+      printError(err, argv.format);
     }
   },
 };

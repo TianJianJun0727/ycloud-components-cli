@@ -3,6 +3,7 @@ import { z } from "zod";
 import { loadComponentForSpec } from "../utils/loader";
 import { listComponents } from "../commands/list";
 import { getComponentDemoCode } from "../commands/demo";
+import { CLIError, ErrorCode } from "../utils/error";
 
 type ToolResult = { content: { type: "text"; text: string }[]; isError?: true };
 
@@ -12,6 +13,20 @@ function toolResult(data: unknown, isError?: true): ToolResult {
   };
   if (isError) result.isError = true;
   return result;
+}
+
+function errorResult(err: unknown): ToolResult {
+  if (err instanceof CLIError) {
+    return toolResult(err.toJSON(), true);
+  }
+  return toolResult(
+    {
+      error: true,
+      code: ErrorCode.UNKNOWN_ERROR,
+      message: err instanceof Error ? err.message : String(err),
+    },
+    true,
+  );
 }
 
 const tools = [
@@ -74,7 +89,7 @@ export function registerAllTools(server: McpServer) {
           args,
         );
       } catch (err) {
-        return toolResult(err, true);
+        return errorResult(err);
       }
     });
   }

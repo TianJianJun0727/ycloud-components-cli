@@ -18,7 +18,7 @@ export const infoCmd: CommandModule<object, InfoArgs> = {
       const component = loadComponentForSpec(argv.component);
       output(component, argv.format as OutputFormat);
     } catch (err) {
-      printError(err);
+      printError(err, argv.format);
     }
   },
 };

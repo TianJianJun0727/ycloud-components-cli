@@ -3,25 +3,75 @@ export enum ErrorCode {
   METADATA_FILE_NOT_FOUND = "METADATA_FILE_NOT_FOUND",
   COMPONENT_NOT_FOUND = "COMPONENT_NOT_FOUND",
   METADATA_NOT_ERROR = "METADATA_NOT_ERROR",
+  PACKAGE_PATH_ERROR = "PACKAGE_PATH_ERROR",
+  UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
+/** Default suggestions for known error codes */
+const ERROR_SUGGESTIONS: Record<string, string> = {
+  [ErrorCode.COMPONENTS_NOT_FOUND]:
+    "Run `npm install @ycloud/components` in your project to install the component library.",
+  [ErrorCode.METADATA_FILE_NOT_FOUND]:
+    "The @ycloud/components package may be outdated or corrupted. Try `npm update @ycloud/components`.",
+  [ErrorCode.COMPONENT_NOT_FOUND]:
+    "Run `ycc list --format json` to see all available component names.",
+  [ErrorCode.METADATA_NOT_ERROR]:
+    "The metadata file may be corrupted. Try reinstalling @ycloud/components.",
+  [ErrorCode.PACKAGE_PATH_ERROR]:
+    "Ensure @ycloud/components is installed in the current project: `npm install @ycloud/components`.",
+};
+
 export class CLIError {
+  public error: true = true;
+
   constructor(
     public code: string,
     public message: string,
     public suggestion?: string,
-  ) {}
+  ) {
+    // Auto-fill suggestion from defaults if not provided
+    if (!suggestion && ERROR_SUGGESTIONS[code]) {
+      this.suggestion = ERROR_SUGGESTIONS[code];
+    }
+  }
+
+  toJSON() {
+    return {
+      error: true,
+      code: this.code,
+      message: this.message,
+      suggestion: this.suggestion,
+    };
+  }
 }
 
 export function printError(err: unknown, format?: string): void {
+  process.exitCode = 1;
+
   if (err instanceof CLIError) {
     if (format === "json") {
-      console.error(JSON.stringify(err, null, 2));
+      console.error(JSON.stringify(err.toJSON(), null, 2));
     } else {
       console.error(`【Error】: ${err.message}`);
       if (err.suggestion) {
         console.error(`【Suggestion】: ${err.suggestion}`);
       }
+    }
+  } else if (err instanceof Error) {
+    if (format === "json") {
+      console.error(
+        JSON.stringify(
+          {
+            error: true,
+            code: ErrorCode.UNKNOWN_ERROR,
+            message: err.message,
+          },
+          null,
+          2,
+        ),
+      );
+    } else {
+      console.error(`【Error】: ${err.message}`);
     }
   } else {
     console.error(err);
