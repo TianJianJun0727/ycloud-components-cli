@@ -6,6 +6,7 @@ import { listCmd } from "./commands/list";
 import { infoCmd } from "./commands/info";
 import { demoCmd } from "./commands/demo";
 import { metaCmd } from "./commands/meta";
+import { docCmd } from "./commands/doc";
 import { mcpCmd } from "./commands/mcp";
 import { checkVersion, displayVersionInfo } from "./utils/version";
 import { COMPONENT_PACKAGE_NAME } from "./constants";
@@ -20,6 +21,7 @@ yargs(hideBin(process.argv))
   .command(infoCmd)
   .command(demoCmd)
   .command(metaCmd)
+  .command(docCmd)
   .command(mcpCmd)
   .demandCommand(1, "You need to specify a command")
   .strict()

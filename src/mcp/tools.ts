@@ -3,6 +3,7 @@ import { z } from "zod";
 import { loadComponentForSpec } from "../utils/loader";
 import { listComponents } from "../commands/list";
 import { getComponentDemoCode } from "../commands/demo";
+import { getComponentDoc } from "../commands/doc";
 import { CLIError, ErrorCode } from "../utils/error";
 
 type ToolResult = { content: { type: "text"; text: string }[]; isError?: true };
@@ -77,6 +78,30 @@ const tools = [
     }) => {
       const demoCode = getComponentDemoCode(component, demoName);
       return toolResult(demoCode);
+    },
+  },
+  {
+    name: "ycc_doc",
+    config: {
+      description:
+        "Get full documentation for a specific @ycloud/components component. Supports English and Chinese.",
+      inputSchema: {
+        component: z.string().describe("Component name (e.g., Button, Input)"),
+        lang: z
+          .enum(["en", "zh"])
+          .optional()
+          .describe("Language for documentation (en or zh, default: en)"),
+      },
+    },
+    handler: async ({
+      component,
+      lang,
+    }: {
+      component: string;
+      lang?: string;
+    }) => {
+      const doc = getComponentDoc(component, lang);
+      return toolResult(doc);
     },
   },
 ] as const;
