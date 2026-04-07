@@ -1,21 +1,9 @@
-import {
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-  renameSync,
-} from "node:fs";
+import { readFileSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import type { MetaData } from "../types";
-import { META_DATA_URL, CACHE_DIR, CACHE_FILE } from "../constants";
-
-/** 确保缓存目录存在，不存在则递归创建 */
-function ensureCacheDir() {
-  if (!existsSync(CACHE_DIR)) {
-    mkdirSync(CACHE_DIR, { recursive: true });
-  }
-}
+import { META_DATA_URL, CACHE_FILE_METADATA } from "../constants";
+import { ensureCacheDir } from "./tools";
 
 /**
  * 从磁盘读取缓存的 metadata
@@ -23,8 +11,8 @@ function ensureCacheDir() {
  */
 function readCache(): MetaData | null {
   try {
-    if (existsSync(CACHE_FILE)) {
-      return JSON.parse(readFileSync(CACHE_FILE, "utf-8"));
+    if (existsSync(CACHE_FILE_METADATA)) {
+      return JSON.parse(readFileSync(CACHE_FILE_METADATA, "utf-8"));
     }
   } catch {}
   return null;
@@ -39,7 +27,7 @@ function writeCache(data: MetaData) {
   ensureCacheDir();
   const tmp = join(tmpdir(), `ycc-metadata-${Date.now()}.json`);
   writeFileSync(tmp, JSON.stringify(data));
-  renameSync(tmp, CACHE_FILE);
+  renameSync(tmp, CACHE_FILE_METADATA);
 }
 
 /**

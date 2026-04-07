@@ -15,8 +15,10 @@ export const COMPONENT_PACKAGE_NAME = "@ycloud/components";
 
 export const NPM_REGISTRY_URL = "https://npm.ycloud.com";
 
+export const UPDATE_DETECT_INTERVAL = 1000 * 60 * 8;
+
 export const META_DATA_URL =
-  process.env.YCC_META_DATA_URL || "http://ui.ycloud.com/meta.json";
+  process.env.YCC_META_DATA_URL || "http://ui.ycloud.com/metadata.json";
 
 export const META_DATA_EXAMPLE_File = join(
   __dirname,
@@ -25,7 +27,9 @@ export const META_DATA_EXAMPLE_File = join(
 
 export const CACHE_DIR = join(homedir(), ".ycc", "cache");
 
-export const CACHE_FILE = join(CACHE_DIR, "metadata.json");
+export const CACHE_FILE_METADATA = join(CACHE_DIR, "metadata.json");
+
+export const CACHE_FILE_UPDATE_DETECT = join(CACHE_DIR, "update_detect.json");
 
 export const cmdCommonOptions: Record<string, Options> = {
   format: {
