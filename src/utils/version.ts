@@ -1,8 +1,27 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import semver from "semver";
+import chalk from "chalk";
 import { COMPONENT_PACKAGE_NAME, NPM_REGISTRY_URL } from "../constants";
 
-export async function checkVersion() {
+export async function checkNodeVersion(wanted: string, id: string) {
+  if (!semver.satisfies(process.version, wanted, { includePrerelease: true })) {
+    console.log(
+      chalk.red(
+        "You are using Node " +
+          process.version +
+          ", but this version of " +
+          id +
+          " requires Node " +
+          wanted +
+          ".\nPlease upgrade your Node version.",
+      ),
+    );
+    process.exit(1);
+  }
+}
+
+export async function checkCliVersion() {
   try {
     const pkgPath = join(__dirname, "../package.json");
     const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
