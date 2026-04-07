@@ -8,10 +8,9 @@ import { CLIError, ErrorCode } from "../utils/error";
 
 export type DocArgs = CommonArgs & {
   component: string;
-  lang?: string;
 };
 
-export async function getComponentDoc(componentName: string, lang?: string) {
+export async function getComponentDoc(componentName: string) {
   const component = await loadComponentForSpec(componentName);
 
   const doc = component.doc;
@@ -23,11 +22,7 @@ export async function getComponentDoc(componentName: string, lang?: string) {
     );
   }
 
-  return {
-    name: component.name,
-    description: component.description,
-    doc,
-  };
+  return doc;
 }
 
 export const docCmd: CommandModule<object, DocArgs> = {
@@ -35,17 +30,10 @@ export const docCmd: CommandModule<object, DocArgs> = {
   describe: "Get full documentation for a component",
   builder: {
     ...cmdCommonOptions,
-    lang: {
-      alias: "l",
-      type: "string",
-      description: "Language (en or zh)",
-      default: "en",
-      choices: ["en", "zh"],
-    },
   },
   handler: async (argv) => {
     try {
-      const doc = await getComponentDoc(argv.component, argv.lang);
+      const doc = await getComponentDoc(argv.component);
       output(doc, argv.format as OutputFormat);
     } catch (err) {
       printError(err, argv.format);

@@ -5,9 +5,9 @@
 ## 安装
 
 ```bash
-npm install -g @ycloud/components-cli
+npm install -g @ycloud/components-cli --registry=https://npm.ycloud.com
 # 或
-pnpm add -g @ycloud/components-cli
+pnpm add -g @ycloud/components-cli --registry=https://npm.ycloud.com
 ```
 
 ## 命令

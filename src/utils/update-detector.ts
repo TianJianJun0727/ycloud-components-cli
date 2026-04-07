@@ -66,7 +66,7 @@ export class UpdateDetector {
     const response = await fetch(
       `${NPM_REGISTRY_URL}/${COMPONENT_PACKAGE_NAME}latest`,
     );
-    if (!response.ok) return null;
+    if (!response.ok) throw new Error("Failed to fetch latest version");
     const data: any = await response.json();
     if (!data) return null;
     return data.version;
