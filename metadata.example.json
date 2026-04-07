@@ -1,0 +1,86 @@
+{
+  "version": "1.0.7",
+  "muiVersion": "5.0.1",
+  "components": [
+    {
+      "name": "LoadingButton",
+      "description": "LoadingButton 基于 MUI Button 封装：在点击后自动进入 loading 状态并展示 CircularProgress，等 onClick（支持 async）执行完毕后自动恢复",
+      "whenToUse": "需要在点击后展示 loading 状态，且 loading 状态持续时间不固定时使用",
+      "inheritMuiProps": "MUI.ButtonProps",
+      "props": [
+        {
+          "name": "loadingColor",
+          "type": "string",
+          "description": "loading 图标颜色",
+          "required": true,
+          "default": "'#fff'",
+          "since": "1.0.1",
+          "deprecated": false
+        },
+        {
+          "name": "loadingSize",
+          "type": "string",
+          "description": "loading 图标大小（传 rem 字符串，如 '1.125rem'）",
+          "required": true,
+          "default": "1.5625rem",
+          "deprecated": false
+        }
+      ],
+      "demos": [
+        {
+          "name": "basic",
+          "nameZh": "基础用法",
+          "description": "基础用法xxxx",
+          "code": "function BasicLoadingButtonGroupDemo() {\n  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));\n\n  return (\n    <LoadingButtonGroup\n      variant=\"contained\"\n      loadingSize=\"1rem\"\n      buttons={[\n        {\n          text: '同步操作',\n          async: false,\n          onClick: () => {\n            // do something sync\n          },\n        },\n        {\n          text: '异步提交',\n          async: true,\n          onClick: async () => {\n            await sleep(1200);\n          },\n        },\n      ]}\n    />\n  );\n}"
+        },
+        {
+          "name": "customStyle",
+          "nameZh": "自定义 loading 样式",
+          "description": "自定义loading样式xxx",
+          "code": "function CustomLoadingStyleDemo() {\n  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));\n\n  return (\n    <LoadingButton\n      variant=\"contained\"\n      loadingColor=\"#602DED\"\n      loadingSize=\"1.125rem\"\n      sx={{ backgroundColor: '#EFEDF5', color: '#1A1E22' }}\n      onClick={async () => {\n        await sleep(1200);\n      }}\n    >\n      保存\n    </LoadingButton>\n  );\n}"
+        }
+      ],
+      "doc": "#ycloud components CLI\n你可以使用 `@ycloud/components-cli` — 一个本地 CLI 工具， 通过读取用户项目中 @ycloud/components 包下的metadata/index.json 文件来查询组件文档、分析项目、指导迁移。所有数据离线可用，无需网络。",
+      "since": "1.0.1"
+    }
+  ],
+  "changeLogs": [
+    {
+      "version": "1.0.7",
+      "date": "2026-03-10",
+      "changes": [
+        {
+          "component": "LoadingButton",
+          "type": "fix",
+          "description": "修复 loading 图标颜色默认值为 '#fff'"
+        },
+        {
+          "component": "TableFilters",
+          "type": "feat",
+          "description": "新增 TableFilters：支持 TEXT_INPUT、CHECKBOX、SELECT、RANGE、EXPANDABLE_MULTI_SELECT、GROUPED_LIST、DATE_RANGE 七种筛选类型，内置异步选项、动态添加筛选项和 ref 控制"
+        }
+      ]
+    },
+    {
+      "version": "1.0.6",
+      "date": "2026-03-02",
+      "changes": [
+        {
+          "component": "Pagination",
+          "type": "fix",
+          "description": "total 更名为 totalCount（Breaking Change），并修正切换每页条数及点击省略号时的页码计算"
+        },
+        {
+          "component": "TableFilters",
+          "type": "fix",
+          "description": "修复 loading 图标颜色默认值为 '#fff'"
+        },
+        {
+          "component": "",
+          "type": "feat",
+          "description": "补充多语言文案与根入口导出：新增 DateRangePicker、TableFilters、ProTable 及相关类型导出，并补齐筛选/日期/空状态相关文案"
+        }
+      ]
+    }
+  ]
+}

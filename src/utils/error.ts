@@ -1,9 +1,9 @@
 export enum ErrorCode {
   COMPONENTS_NOT_FOUND = "COMPONENTS_NOT_FOUND",
-  METADATA_FILE_NOT_FOUND = "METADATA_FILE_NOT_FOUND",
+  COMPONENTS_DEMO_NOT_FOUND = "COMPONENTS_DEMO_NOT_FOUND",
+  DOCUMENT_NOT_FOUND = "DOCUMENT_NOT_FOUND",
   COMPONENT_NOT_FOUND = "COMPONENT_NOT_FOUND",
-  METADATA_NOT_ERROR = "METADATA_NOT_ERROR",
-  PACKAGE_PATH_ERROR = "PACKAGE_PATH_ERROR",
+  METADATA_LOAD_ERROR = "METADATA_LOAD_ERROR",
   UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
@@ -11,14 +11,10 @@ export enum ErrorCode {
 const ERROR_SUGGESTIONS: Record<string, string> = {
   [ErrorCode.COMPONENTS_NOT_FOUND]:
     "Run `npm install @ycloud/components` in your project to install the component library.",
-  [ErrorCode.METADATA_FILE_NOT_FOUND]:
-    "The @ycloud/components package may be outdated or corrupted. Try `npm update @ycloud/components`.",
   [ErrorCode.COMPONENT_NOT_FOUND]:
     "Run `ycc list --format json` to see all available component names.",
-  [ErrorCode.METADATA_NOT_ERROR]:
+  [ErrorCode.METADATA_LOAD_ERROR]:
     "The metadata file may be corrupted. Try reinstalling @ycloud/components.",
-  [ErrorCode.PACKAGE_PATH_ERROR]:
-    "Ensure @ycloud/components is installed in the current project: `npm install @ycloud/components`.",
 };
 
 export class CLIError {

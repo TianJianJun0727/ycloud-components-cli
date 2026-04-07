@@ -7,7 +7,6 @@ allowed-tools:
   - Bash(ycc *)
   - Bash(npm install -g @ycloud/components-cli)
   - Bash(which ycc)
-  - Bash(npm update -g @ycloud/components-cli)
 ---
 
 # ycloud components CLI

@@ -1,8 +1,7 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import semver from "semver";
 import chalk from "chalk";
-import { COMPONENT_PACKAGE_NAME, NPM_REGISTRY_URL } from "../constants";
+import { CLI_NAME, NPM_REGISTRY_URL } from "../constants";
+import pkgJson from "../../package.json";
 
 export async function checkNodeVersion(wanted: string, id: string) {
   if (!semver.satisfies(process.version, wanted, { includePrerelease: true })) {
@@ -23,11 +22,9 @@ export async function checkNodeVersion(wanted: string, id: string) {
 
 export async function checkCliVersion() {
   try {
-    const pkgPath = join(__dirname, "../package.json");
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-    const currentVersion = pkg.version;
+    const currentVersion = pkgJson.version;
 
-    const response = await fetch(`${NPM_REGISTRY_URL}/${pkg.name}`);
+    const response = await fetch(`${NPM_REGISTRY_URL}/${pkgJson.name}`);
     if (!response.ok) return null;
 
     const data = await response.json();
@@ -55,7 +52,7 @@ export function displayVersionInfo(info: {
   if (info.hasUpdate) {
     console.log(`\n🎉 New version available: ${info.latestVersion}`);
     console.log(
-      `\n💡 Update now: npm install -g ${COMPONENT_PACKAGE_NAME}@latest\n`,
+      `\n💡 Update now: npm install -g ${CLI_NAME}@latest\n`,
     );
   }
 }

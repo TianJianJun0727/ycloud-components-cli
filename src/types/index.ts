@@ -12,29 +12,37 @@ export type ComponentDemo = {
   name: string;
   nameZh: string;
   description?: string;
-  descriptionZh?: string;
   code: string;
 };
 
 export type Component = {
   name: string;
-  nameZh: string;
   description: string;
-  descriptionZh: string;
   inheritMuiProps: string | null;
   props: ComponentProp[];
   demos: ComponentDemo[];
   whenToUse?: string;
-  whenToUseZh?: string;
+  bestPractices?: string;
   faq?: { question: string; answer: string }[];
   doc?: string;
-  docZh?: string;
+  since?: string;
+};
+
+export type Change = {
+  component: string;
+  type: string;
+  description: string;
+};
+
+export type ChangeLog = {
+  version: string;
+  date: string;
+  changes: Change[];
 };
 
 export type MetaData = {
   version: string;
   muiVersion: string;
   components: Component[];
+  changeLogs: ChangeLog[];
 };
-
-

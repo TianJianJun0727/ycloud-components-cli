@@ -1,60 +1,47 @@
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
 import { ErrorCode, CLIError } from "./error";
-import { getPackageRootPath } from "./tools";
-import type { MetaData, Component } from "../types";
-import { COMPONENT_PACKAGE_NAME } from "../constants";
+import type { MetaData, Component, ChangeLog } from "../types";
+import { loadMetadataFromUrl } from "./remote-loader";
+import { __DEV__, META_DATA_EXAMPLE_File } from "../constants";
 
+// 内存缓存：避免在同一进程中重复读取磁盘
 let metadataCache: MetaData | null = null;
 
-export function loadMetadata(): MetaData {
+export async function loadMetadata(): Promise<MetaData> {
   if (metadataCache) return metadataCache;
 
-  const pkgRoot = getPackageRootPath(COMPONENT_PACKAGE_NAME);
+  let data: MetaData | null;
 
-  if (!pkgRoot) {
+  if (__DEV__) {
+    // 开发环境读取本地文件
+    data = JSON.parse(readFileSync(META_DATA_EXAMPLE_File, "utf-8"));
+  } else {
+    data = await loadMetadataFromUrl();
+  }
+
+
+  if (!data) {
     throw new CLIError(
-      ErrorCode.COMPONENTS_NOT_FOUND,
-      `${COMPONENT_PACKAGE_NAME} package not found. Please install it first.`,
+      ErrorCode.METADATA_LOAD_ERROR,
+      "Failed to load metadata from remote server",
+      "Please check your network connection and try again.",
     );
   }
 
-  const filePath = join(pkgRoot, "metadata", "index.json");
-
-  if (!existsSync(filePath)) {
-    throw new CLIError(
-      ErrorCode.METADATA_FILE_NOT_FOUND,
-      `Metadata file not found: ${filePath}`,
-    );
-  }
-
-  let result: MetaData;
-
-  try {
-    result = JSON.parse(readFileSync(filePath, "utf-8"));
-  } catch (error) {
-    throw new CLIError(
-      ErrorCode.METADATA_NOT_ERROR,
-      `${COMPONENT_PACKAGE_NAME} metadata not found`,
-    );
-  }
-
-  metadataCache = result;
-
-  return result;
+  metadataCache = data;
+  return data;
 }
 
-export function loadComponents(): Component[] {
-  const components = loadMetadata()?.components;
-  if (!components) return [];
-  return components;
+export async function loadComponents(): Promise<Component[]> {
+  const { components } = await loadMetadata();
+  return components ?? [];
 }
 
-export function loadComponentForSpec(componentName: string): Component {
-  const components = loadComponents();
-  const component = components.find(
-    (component) => component.name === componentName,
-  );
+export async function loadComponentForSpec(
+  componentName: string,
+): Promise<Component> {
+  const components = await loadComponents();
+  const component = components.find((c) => c.name === componentName);
 
   if (!component) {
     throw new CLIError(
@@ -63,4 +50,9 @@ export function loadComponentForSpec(componentName: string): Component {
     );
   }
   return component;
+}
+
+export async function loadChangeLogs(): Promise<ChangeLog[]> {
+  const { changeLogs } = await loadMetadata();
+  return changeLogs ?? [];
 }

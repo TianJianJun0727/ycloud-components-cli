@@ -38,7 +38,7 @@ const tools = [
         "List all available @ycloud/components with their names and descriptions",
     },
     handler: async () => {
-      const components = listComponents();
+      const components = await listComponents();
       return toolResult(components);
     },
   },
@@ -52,7 +52,7 @@ const tools = [
       },
     },
     handler: async ({ component }: { component: string }) => {
-      const comp = loadComponentForSpec(component);
+      const comp = await loadComponentForSpec(component);
       return toolResult(comp);
     },
   },
@@ -76,7 +76,7 @@ const tools = [
       component: string;
       demoName?: string;
     }) => {
-      const demoCode = getComponentDemoCode(component, demoName);
+      const demoCode = await getComponentDemoCode(component, demoName);
       return toolResult(demoCode);
     },
   },
@@ -100,7 +100,7 @@ const tools = [
       component: string;
       lang?: string;
     }) => {
-      const doc = getComponentDoc(component, lang);
+      const doc = await getComponentDoc(component, lang);
       return toolResult(doc);
     },
   },

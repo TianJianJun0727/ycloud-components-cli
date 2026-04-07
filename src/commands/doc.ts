@@ -11,23 +11,22 @@ export type DocArgs = CommonArgs & {
   lang?: string;
 };
 
-export function getComponentDoc(componentName: string, lang?: string) {
-  const component = loadComponentForSpec(componentName);
+export async function getComponentDoc(componentName: string, lang?: string) {
+  const component = await loadComponentForSpec(componentName);
+  console.log('component: ', component);
 
-  const useZh = lang === "zh";
-  const doc = useZh ? component.docZh : component.doc;
+  const doc = component.doc;
 
   if (!doc) {
     throw new CLIError(
-      ErrorCode.COMPONENTS_NOT_FOUND,
-      `Documentation not found for component ${componentName}${useZh ? " (zh)" : ""}`,
+      ErrorCode.DOCUMENT_NOT_FOUND,
+      `Documentation not found for component ${componentName}}`,
     );
   }
 
   return {
     name: component.name,
-    nameZh: component.nameZh,
-    description: useZh ? component.descriptionZh : component.description,
+    description: component.description,
     doc,
   };
 }
@@ -45,9 +44,9 @@ export const docCmd: CommandModule<object, DocArgs> = {
       choices: ["en", "zh"],
     },
   },
-  handler: (argv) => {
+  handler: async (argv) => {
     try {
-      const doc = getComponentDoc(argv.component, argv.lang);
+      const doc = await getComponentDoc(argv.component, argv.lang);
       output(doc, argv.format as OutputFormat);
     } catch (err) {
       printError(err, argv.format);

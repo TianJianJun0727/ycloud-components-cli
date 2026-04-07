@@ -10,13 +10,16 @@ export type DemoArgs = CommonArgs & {
   demoName?: string;
 };
 
-export function getComponentDemoCode(componentName: string, demoName?: string) {
-  const component = loadComponentForSpec(componentName);
+export async function getComponentDemoCode(
+  componentName: string,
+  demoName?: string,
+) {
+  const component = await loadComponentForSpec(componentName);
   if (demoName) {
     const demo = component.demos.find((d) => d.name === demoName);
     if (!demo) {
       throw new CLIError(
-        ErrorCode.COMPONENTS_NOT_FOUND,
+        ErrorCode.COMPONENTS_DEMO_NOT_FOUND,
         `Demo ${demoName} not found for ${componentName}`,
       );
     }
@@ -29,9 +32,9 @@ export const demoCmd: CommandModule<object, DemoArgs> = {
   command: "demo <component> [demoName]",
   describe: "Get component demo code",
   builder: cmdCommonOptions,
-  handler: (argv) => {
+  handler: async (argv) => {
     try {
-      const demo = getComponentDemoCode(argv.component, argv.demoName);
+      const demo = await getComponentDemoCode(argv.component, argv.demoName);
       output(demo, argv.format as OutputFormat);
     } catch (err) {
       printError(err, argv.format);

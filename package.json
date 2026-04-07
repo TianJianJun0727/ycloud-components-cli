@@ -7,7 +7,7 @@
     "ycc": "./dist/cli.js"
   },
   "scripts": {
-    "dev": "tsup --watch",
+    "dev": "tsup --watch src",
     "build": "tsup"
   },
   "keywords": [
@@ -33,6 +33,6 @@
     "typescript": "^5.3.0"
   },
   "engines": {
-    "node": "^24.7.2"
+    "node": "^24.7.0"
   }
 }
