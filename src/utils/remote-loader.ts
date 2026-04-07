@@ -6,7 +6,7 @@ import {
   renameSync,
 } from "node:fs";
 import { join } from "node:path";
-import { homedir, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import type { MetaData } from "../types";
 import { META_DATA_URL, CACHE_DIR, CACHE_FILE } from "../constants";
 

@@ -36,7 +36,7 @@ function registerCmd() {
 
 (async () => {
   try {
-    if (__PROD__) {
+    if (process.env.YCC_SKIP_UPDATE_CHECK === "true") {
       const versionInfo = await checkCliVersion();
       if (versionInfo) {
         displayVersionInfo(versionInfo);

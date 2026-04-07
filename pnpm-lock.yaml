@@ -17,9 +17,9 @@ importers:
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
-      chlak:
-        specifier: 0.0.1-security
-        version: 0.0.1-security
+      dotenv:
+        specifier: ^17.4.1
+        version: 17.4.1
       semver:
         specifier: ^7.7.4
         version: 7.7.4
@@ -754,9 +754,6 @@ packages:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
-  chlak@0.0.1-security:
-    resolution: {integrity: sha512-v+HtxaFeN73uzUNtqBS5xzBxxykzFlNuLo7Yl+3TMVUNT8W0g/2Gpg7VQ+Q0adpd2UhouJWX+puIJMRmTXxvOw==}
-
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
@@ -835,6 +832,10 @@ packages:
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+
+  dotenv@17.4.1:
+    resolution: {integrity: sha512-k8DaKGP6r1G30Lx8V4+pCsLzKr8vLmV2paqEj1Y55GdAgJuIqpRp5FfajGF8KtwMxCz9qJc6wUIJnm053d/WCw==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -2083,8 +2084,6 @@ snapshots:
 
   chalk@5.6.2: {}
 
-  chlak@0.0.1-security: {}
-
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
@@ -2148,6 +2147,8 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       csstype: 3.2.3
+
+  dotenv@17.4.1: {}
 
   dunder-proto@1.0.1:
     dependencies:

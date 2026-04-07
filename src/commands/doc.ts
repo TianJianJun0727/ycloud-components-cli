@@ -13,7 +13,6 @@ export type DocArgs = CommonArgs & {
 
 export async function getComponentDoc(componentName: string, lang?: string) {
   const component = await loadComponentForSpec(componentName);
-  console.log('component: ', component);
 
   const doc = component.doc;
 

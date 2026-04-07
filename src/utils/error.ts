@@ -13,8 +13,6 @@ const ERROR_SUGGESTIONS: Record<string, string> = {
     "Run `npm install @ycloud/components` in your project to install the component library.",
   [ErrorCode.COMPONENT_NOT_FOUND]:
     "Run `ycc list --format json` to see all available component names.",
-  [ErrorCode.METADATA_LOAD_ERROR]:
-    "The metadata file may be corrupted. Try reinstalling @ycloud/components.",
 };
 
 export class CLIError {

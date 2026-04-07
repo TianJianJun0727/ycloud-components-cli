@@ -6,13 +6,17 @@ export const __DEV__ = process.env.NODE_ENV === "development";
 
 export const __PROD__ = process.env.NODE_ENV === "production";
 
+export const USE_LOCAL_META_DATA =
+  __DEV__ && process.env.YCC_USE_LOCAL_META_DATA === "true";
+
 export const CLI_NAME = "@ycloud/components-cli";
 
 export const COMPONENT_PACKAGE_NAME = "@ycloud/components";
 
 export const NPM_REGISTRY_URL = "https://npm.ycloud.com";
 
-export const META_DATA_URL = "http://ui.ycloud.com/meta.json";
+export const META_DATA_URL =
+  process.env.YCC_META_DATA_URL || "http://ui.ycloud.com/meta.json";
 
 export const META_DATA_EXAMPLE_File = join(
   __dirname,
