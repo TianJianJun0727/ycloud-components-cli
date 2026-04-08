@@ -4,6 +4,7 @@
   "components": [
     {
       "name": "LoadingButton",
+      "nameZh": "记载中按钮",
       "description": "LoadingButton 基于 MUI Button 封装：在点击后自动进入 loading 状态并展示 CircularProgress，等 onClick（支持 async）执行完毕后自动恢复",
       "whenToUse": "需要在点击后展示 loading 状态，且 loading 状态持续时间不固定时使用",
       "inheritMuiProps": "MUI.ButtonProps",
@@ -14,8 +15,8 @@
           "description": "loading 图标颜色",
           "required": true,
           "default": "'#fff'",
-          "since": "1.0.1",
-          "deprecated": false
+          "deprecated": false,
+          "since": "1.0.1"
         },
         {
           "name": "loadingSize",

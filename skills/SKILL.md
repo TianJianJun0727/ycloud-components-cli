@@ -64,7 +64,7 @@ ycc token Button --format json
 
 ### 4. 查询 Material UI 官方文档
 
-当组件 info 包含 `inheritMuiProps` 字段且当前文档 props满足需求时，使用 MCP 服务 "mui-mcp" 查询 MUI 组件属性：
+当组件 info 包含 `inheritMuiProps` 字段且当前文档 `props` 不满足需求时，调用 MCP 服务 "mui-mcp" 查询 MUI 组件属性：
 
 ```bash
 ycc meta --format json      # 获取 MUI 版本信息
@@ -74,7 +74,7 @@ ycc meta --format json      # 获取 MUI 版本信息
 
 ### 5. 浏览可用组件
 
-列出所有组件及其分类：
+列出所有组件
 
 ```bash
 ycc list --format json

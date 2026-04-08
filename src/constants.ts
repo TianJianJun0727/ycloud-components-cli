@@ -20,7 +20,7 @@ export const UPDATE_DETECT_INTERVAL = 1000 * 60 * 8;
 export const META_DATA_URL =
   process.env.YCC_META_DATA_URL || "http://ui.ycloud.com/metadata.json";
 
-export const META_DATA_EXAMPLE_File = join(
+export const META_DATA_EXAMPLE_FILE = join(
   __dirname,
   "../metadata.example.json",
 );
