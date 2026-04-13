@@ -9,6 +9,7 @@ import { demoCmd } from "./commands/demo";
 import { metaCmd } from "./commands/meta";
 import { docCmd } from "./commands/doc";
 import { mcpCmd } from "./commands/mcp";
+import { skillCmd } from "./commands/skill";
 import { COMPONENT_PACKAGE_NAME, CLI_NAME, __PROD__ } from "./constants";
 import { checkNodeVersion, printUpdateNotice } from "./utils/preflight";
 import { updateDetector } from "./utils/update-detector";
@@ -26,6 +27,7 @@ function registerCmd() {
     .command(metaCmd)
     .command(docCmd)
     .command(mcpCmd)
+    .command(skillCmd)
     .demandCommand(1, "You need to specify a command")
     .strict()
     .help()
