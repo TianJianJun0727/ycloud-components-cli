@@ -4,6 +4,7 @@ coverage/
 .DS_Store
 .worktrees/
 .claude/
+.codex/
 
 # 本地环境变量（不要提交到仓库）
 .env.local
