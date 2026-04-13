@@ -1,7 +1,7 @@
 import semver from "semver";
 import chalk from "chalk";
 import boxen from "boxen";
-import { CLI_NAME } from "../constants";
+import { CLI_NAME, NPM_REGISTRY_URL } from "../constants";
 
 export const checkNodeVersion = (wanted: string, id: string) => {
   if (!semver.satisfies(process.version, wanted, { includePrerelease: true })) {
@@ -34,7 +34,7 @@ export const printUpdateNotice = ({
       boxen(
         `🔔 New version available! ${chalk.redBright(currentVersion)} ➡️  ${chalk.greenBright(
           latestVersion,
-        )}.\n Run "${chalk.cyanBright(`npm install -g ${CLI_NAME}@latest`)}" to update.`,
+        )}.\n Run "${chalk.cyanBright(`npm install -g ${CLI_NAME}@latest`)} --registry=${NPM_REGISTRY_URL}" to update.`,
         {
           padding: 1,
           margin: { top: 1, bottom: 1 },

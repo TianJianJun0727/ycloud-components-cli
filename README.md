@@ -75,8 +75,12 @@ ycc mcp
 # 自动安装到当前项目下已存在的 .codex/skills 或 .claude/skills
 ycc skill install
 
-# 安装到指定目录
+# 安装到指定 skills 目录
 ycc skill install ~/.codex/skills
+
+# 也可以直接传 .codex / .claude / .
+ycc skill install .codex
+ycc skill install .
 
 # 覆盖已存在的同名 skill
 ycc skill install ~/.codex/skills --force

@@ -19,7 +19,7 @@ allowed-tools:
 - 先查再写。只要是写、改、解释 `@ycloud/components` 代码，就先查询 `ycc`。
 - 不要编造 API。当前会话里没有被 `ycc` 验证过的组件、prop、demo、文档内容，都不能当成已知事实。
 - 不确定组件名时，先 `list`，不要猜。
-- 能从 demo 改出来，就不要从零造。
+- 能从 `demo` 改出来，就不要从零造。
 - `info` 不够时再 `doc`，不要一上来就全文档检索。
 - 如果 `ycc` 查不到答案，明确告诉用户“CLI 未提供该信息”，不要补全想象中的行为。
 
@@ -136,15 +136,23 @@ ycc doc Button --format json
 
 ### 需要确认 MUI 继承关系
 
-如果 `ycc info` 返回了 `inheritMuiProps` 字段，说明该组件继承了某个 MUI 组件的 props。
+- 如果 `ycc info` 返回了 `inheritMuiProps` 字段，说明该组件继承了某个 MUI 组件的 props。
 
 这时：
 
 1. 先以 `ycc info` 返回结果为主
 2. 如果仍缺少关键信息，再运行 `ycc meta --format json` 确认 `muiVersion`
-3. 只有在外部 mui mcp文档工具可用时，才去调用mcp查对应版本的 MUI 文档
+3. 检查mui mcp 服务是否可用，若可用则调用mcp查对应版本的 MUI 文档
 
 不要默认“最新 MUI 文档”一定适用。
+
+- 如果 `ycc info` 没有返回 `inheritMuiProps` 字段，但 `ycc doc`中明确表示该组件继承自MUI的某个组件的props。
+
+这时：
+
+1. 先以 `ycc info` 及 `ycc doc` 返回结果为主
+2. 如果仍缺少关键信息，再运行 `ycc meta --format json` 确认 `muiVersion`
+3. 检查mui mcp 服务是否可用，若可用则调用mcp查对应版本的 MUI 文档
 
 ## AI agent 要主动做的事
 
@@ -152,7 +160,7 @@ ycc doc Button --format json
 - 用户让你“照着现有风格加一个功能”时，也要先验证相关组件 API，再动手改代码。
 - 如果需求里同时涉及多个组件，分别查询每个组件，不要只查一个就开始拼装。
 - 如果你准备使用某个 prop，但没有在 `ycc info` 中见到它，就停下来继续查询，不要直接写进代码。
-- 如果 demo 已经覆盖了用户要的模式，优先在 demo 基础上改，而不是重新设计 JSX 结构。
+- 如果 `demo` 已经覆盖了用户要的模式，优先在 demo 基础上改，而不是重新设计 JSX 结构。
 
 ## 错误处理
 

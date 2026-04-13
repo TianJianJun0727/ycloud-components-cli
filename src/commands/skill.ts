@@ -14,6 +14,23 @@ import type { SkillInstallArgs } from "../types/commands";
 import { CLIError, ErrorCode, printError } from "../utils/error";
 import { output, type OutputFormat } from "../utils/output";
 
+function normalizeExplicitTargetDir(targetDir: string) {
+  const resolvedTargetDir = resolve(targetDir);
+  const trimmedTargetDir = targetDir.replace(/[\\/]+$/, "") || targetDir;
+  const rawBaseName = basename(trimmedTargetDir);
+  const resolvedBaseName = basename(resolvedTargetDir);
+
+  if (rawBaseName === "." || rawBaseName === "..") {
+    return join(resolvedTargetDir, "skills");
+  }
+
+  if (resolvedBaseName === ".codex" || resolvedBaseName === ".claude") {
+    return join(resolvedTargetDir, "skills");
+  }
+
+  return resolvedTargetDir;
+}
+
 function listBuiltinSkillDirs() {
   if (!existsSync(BUILTIN_SKILLS_DIR)) {
     throw new CLIError(
@@ -29,7 +46,7 @@ function listBuiltinSkillDirs() {
 
 function resolveInstallTargets(targetDir?: string) {
   if (targetDir) {
-    return [resolve(targetDir)];
+    return [normalizeExplicitTargetDir(targetDir)];
   }
 
   const autoTargets = [".codex", ".claude"]
