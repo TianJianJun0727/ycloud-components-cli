@@ -1,21 +1,26 @@
 {
   "name": "@ycloud/components-cli",
-  "version": "1.1.8",
+  "version": "2.0.0-beta.0",
   "description": "用于 @ycloud/components 组件库文档的CLI工具",
-  "main": "dist/cli.js",
   "bin": {
-    "ycc": "./dist/cli.js"
+    "ycc": "./bin/ycc.js"
   },
   "files": [
+    "bin",
     "dist",
     "README.md",
     "skills"
   ],
   "scripts": {
-    "dev": "tsup --watch src",
-    "build": "tsup",
-    "prepublishOnly": "npm run build",
-    "release": "npm run build && npm publish",
+    "dev": "cargo run --",
+    "build": "cargo build --release && node scripts/copy-current-binary.mjs",
+    "build:all": "node scripts/build-all-targets.mjs",
+    "build:darwin-arm64": "node scripts/build-target.mjs darwin-arm64 aarch64-apple-darwin",
+    "build:darwin-x64": "node scripts/build-target.mjs darwin-x64 x86_64-apple-darwin",
+    "build:linux-x64": "node scripts/build-target.mjs linux-x64 x86_64-unknown-linux-gnu",
+    "build:windows-x64": "node scripts/build-target.mjs windows-x64 x86_64-pc-windows-msvc",
+    "prepublishOnly": "npm run build:all",
+    "release": "npm run build:all && npm publish",
     "version": "standard-version"
   },
   "keywords": [
@@ -25,24 +30,7 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "boxen": "^8.0.1",
-    "chalk": "^5.6.2",
-    "dotenv": "^17.4.1",
-    "semver": "^7.7.4",
-    "yargs": "^18.0.0",
-    "zod": "^4.3.6"
-  },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "@types/semver": "^7.7.1",
-    "@types/yargs": "^17.0.35",
-    "standard-version": "^9.5.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.3.0"
-  },
-  "engines": {
-    "node": ">=22.0.0"
+    "standard-version": "^9.5.0"
   }
 }

@@ -42,6 +42,18 @@ ycc demo Button basic
 ycc meta
 ```
 
+### `ycc config get/set metadataUrl`
+
+查看或配置元数据源。默认源为 `https://ui.ycloud.com/metadata.json`。
+
+```bash
+# 查看当前生效的元数据源
+ycc config get metadataUrl
+
+# 设置长期使用的元数据源
+ycc config set metadataUrl https://example.com/metadata.json
+```
+
 ### `ycc doc <component>`
 
 查看组件完整文档。
@@ -88,27 +100,47 @@ ycc skill install ~/.codex/skills --force
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
-| `YCC_META_DATA_URL` | 元数据 JSON 地址 | `http://ui.ycloud.com/metadata.json` |
+| `YCC_META_DATA_URL` | 临时覆盖元数据 JSON 地址 | `https://ui.ycloud.com/metadata.json` |
 | `YCC_USE_LOCAL_META_DATA` | 使用本地元数据（开发用） | `false` |
 | `YCC_SKIP_UPDATE_CHECK` | 跳过版本更新检测 | `false` |
+
+元数据源优先级：`YCC_META_DATA_URL` 环境变量 > `~/.config/ycc/config.json` 中的 `metadataUrl` > 默认源。
+
+元数据缓存默认写入 `~/.config/ycc/cache/metadata.json`。如果设置了 `XDG_CONFIG_HOME`，则写入 `$XDG_CONFIG_HOME/ycc/cache/metadata.json`。
 
 ## 开发
 
 ```bash
-# 安装依赖
-pnpm install
+# 运行本地 CLI
+cargo run -- <command>
 
-# 开发模式（watch）
-pnpm dev
+# 运行测试
+cargo test
 
 # 构建
 pnpm build
 
+# 构建指定平台二进制
+pnpm build:darwin-arm64
+pnpm build:darwin-x64
+pnpm build:linux-x64
+pnpm build:windows-x64
+
+# 依次构建所有支持平台
+pnpm build:all
+
 # 本地测试
-pnpm link -> yc <command> 
-or
-node dist/cli.js <command> 
+./dist/ycc <command>
 ```
+
+支持的发布二进制：
+
+| 平台 | Rust target | 输出路径 |
+|------|-------------|----------|
+| macOS Apple Silicon | `aarch64-apple-darwin` | `dist/darwin-arm64/ycc` |
+| macOS Intel | `x86_64-apple-darwin` | `dist/darwin-x64/ycc` |
+| Linux x64 | `x86_64-unknown-linux-gnu` | `dist/linux-x64/ycc` |
+| Windows x64 | `x86_64-pc-windows-msvc` | `dist/windows-x64/ycc.exe` |
 
 ## License
 
