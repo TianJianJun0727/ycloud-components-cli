@@ -12,7 +12,7 @@ export enum ErrorCode {
 /** Default suggestions for known error codes */
 const ERROR_SUGGESTIONS: Record<string, string> = {
   [ErrorCode.COMPONENTS_NOT_FOUND]:
-    "Run `npm install @ycloud/components` in your project to install the component library.",
+    "Run `npm config set @ycloud:registry https://npm.ycloud.com && npm install @ycloud/components` in your project to install the component library.",
   [ErrorCode.COMPONENT_NOT_FOUND]:
     "Run `ycc list --format json` to see all available component names.",
 };
