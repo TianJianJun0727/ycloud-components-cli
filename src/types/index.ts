@@ -27,15 +27,17 @@ export type ComponentDemo = {
 };
 
 export type Component = {
-  // 组件名称
+  // 组件名称，必须唯一
   name: string;
+  // 组件名称（中文）
+  nameZh: string;
   // 组件描述
   description: string;
   /**
    * 组件props是否继承 MUI 组件props
    * 如果继承，需要指定 MUI 组件的名称，否则为空
    */
-  inheritMuiProps: string | null;
+  inheritMuiProps?: string;
   // 组件props
   props: ComponentProp[];
   // 组件示例

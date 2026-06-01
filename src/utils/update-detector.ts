@@ -5,7 +5,7 @@ import chalk from "chalk";
 import {
   CACHE_FILE_UPDATE_DETECT,
   NPM_REGISTRY_URL,
-  COMPONENT_PACKAGE_NAME,
+  CLI_NAME,
   UPDATE_DETECT_INTERVAL,
 } from "../constants";
 import { ensureCacheDir } from "./tools";
@@ -63,10 +63,8 @@ export class UpdateDetector {
   }
 
   private async fetchLatestVersion() {
-    const response = await fetch(
-      `${NPM_REGISTRY_URL}/${COMPONENT_PACKAGE_NAME}latest`,
-    );
-    if (!response.ok) return null;
+    const response = await fetch(`${NPM_REGISTRY_URL}/${CLI_NAME}/latest`);
+    if (!response.ok) throw new Error("Failed to fetch latest version");
     const data: any = await response.json();
     if (!data) return null;
     return data.version;

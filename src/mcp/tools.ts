@@ -87,20 +87,10 @@ const tools = [
         "Get full documentation for a specific @ycloud/components component. Supports English and Chinese.",
       inputSchema: {
         component: z.string().describe("Component name (e.g., Button, Input)"),
-        lang: z
-          .enum(["en", "zh"])
-          .optional()
-          .describe("Language for documentation (en or zh, default: en)"),
       },
     },
-    handler: async ({
-      component,
-      lang,
-    }: {
-      component: string;
-      lang?: string;
-    }) => {
-      const doc = await getComponentDoc(component, lang);
+    handler: async ({ component }: { component: string; lang?: string }) => {
+      const doc = await getComponentDoc(component);
       return toolResult(doc);
     },
   },

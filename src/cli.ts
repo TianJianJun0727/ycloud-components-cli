@@ -9,8 +9,9 @@ import { demoCmd } from "./commands/demo";
 import { metaCmd } from "./commands/meta";
 import { docCmd } from "./commands/doc";
 import { mcpCmd } from "./commands/mcp";
+import { skillCmd } from "./commands/skill";
 import { COMPONENT_PACKAGE_NAME, CLI_NAME, __PROD__ } from "./constants";
-import { checkNodeVersion } from "./utils/version";
+import { checkNodeVersion, printUpdateNotice } from "./utils/preflight";
 import { updateDetector } from "./utils/update-detector";
 import pkg from "../package.json";
 
@@ -19,34 +20,18 @@ function registerCmd() {
     .scriptName("ycc")
     .usage(`CLI tool for ${COMPONENT_PACKAGE_NAME} documentation`)
     .version(pkg.version)
-    .alias("version", "V")
+    .alias("version", "v")
     .command(listCmd)
     .command(infoCmd)
     .command(demoCmd)
     .command(metaCmd)
     .command(docCmd)
     .command(mcpCmd)
+    .command(skillCmd)
     .demandCommand(1, "You need to specify a command")
     .strict()
     .help()
     .parse();
-}
-
-function printUpdateNotice({
-  currentVersion,
-  latestVersion,
-  hasUpdate,
-}: {
-  currentVersion: string;
-  latestVersion?: string;
-  hasUpdate: boolean;
-}) {
-  console.log(`\n📦 Current version: ${currentVersion}`);
-
-  if (hasUpdate) {
-    console.log(`\n🎉 New version available: ${latestVersion}`);
-    console.log(`\n💡 Update now: npm install -g ${CLI_NAME}@latest\n`);
-  }
 }
 
 checkNodeVersion(pkg.engines.node, CLI_NAME);
@@ -61,6 +46,7 @@ checkNodeVersion(pkg.engines.node, CLI_NAME);
     }
   } catch (err) {
     console.log(chalk.red(err));
+    process.exit(1);
   } finally {
     registerCmd();
   }

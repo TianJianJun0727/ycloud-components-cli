@@ -5,9 +5,9 @@
 ## 安装
 
 ```bash
-npm install -g @ycloud/components-cli
+npm install -g @ycloud/components-cli --registry=https://npm.ycloud.com
 # 或
-pnpm add -g @ycloud/components-cli
+pnpm add -g @ycloud/components-cli --registry=https://npm.ycloud.com
 ```
 
 ## 命令
@@ -58,6 +58,32 @@ ycc doc Button
 
 ```bash
 ycc mcp
+```
+
+### `ycc skill install [targetDir]`
+
+将 CLI 内置的 skill 安装到本地目录。
+
+如果未指定 `targetDir`，CLI 会检查当前项目根目录下是否存在 `.codex` 和 `.claude`：
+
+- 存在 `.codex`，安装到 `.codex/skills`
+- 存在 `.claude`，安装到 `.claude/skills`
+- 两者都存在时，同时安装到两个目录
+- 两者都不存在时，命令会报错并要求显式指定 `targetDir`
+
+```bash
+# 自动安装到当前项目下已存在的 .codex/skills 或 .claude/skills
+ycc skill install
+
+# 安装到指定 skills 目录
+ycc skill install ~/.codex/skills
+
+# 也可以直接传 .codex / .claude / .
+ycc skill install .codex
+ycc skill install .
+
+# 覆盖已存在的同名 skill
+ycc skill install ~/.codex/skills --force
 ```
 
 ## 环境变量

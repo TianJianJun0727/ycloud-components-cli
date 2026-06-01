@@ -18,12 +18,14 @@ export const NPM_REGISTRY_URL = "https://npm.ycloud.com";
 export const UPDATE_DETECT_INTERVAL = 1000 * 60 * 8;
 
 export const META_DATA_URL =
-  process.env.YCC_META_DATA_URL || "http://ui.ycloud.com/metadata.json";
+  process.env.YCC_META_DATA_URL || "https://ui.ycloud.com/metadata.json";
 
-export const META_DATA_EXAMPLE_File = join(
+export const META_DATA_EXAMPLE_FILE = join(
   __dirname,
   "../metadata.example.json",
 );
+
+export const BUILTIN_SKILLS_DIR = join(__dirname, "../skills");
 
 export const CACHE_DIR = join(homedir(), ".ycc", "cache");
 

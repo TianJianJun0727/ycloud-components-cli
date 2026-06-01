@@ -9,6 +9,7 @@ export async function listComponents() {
   const components = await loadComponents();
   return components.map((c) => ({
     name: c.name,
+    nameZh: c.nameZh,
     description: c.description,
     since: c.since,
   }));
