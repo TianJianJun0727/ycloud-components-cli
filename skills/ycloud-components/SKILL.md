@@ -39,13 +39,18 @@ Do not reference CLI commands that do not exist, such as `token`, `changelog`, `
 
 ## Initialization
 
-Check if the CLI is available:
+Check the Node version and CLI availability:
 
 ```bash
+node --version
 which ycc
 ```
 
-If not found, install it:
+If the Node version is below `v22.0.0`, stop and inform the user:
+
+> The current Node.js version does not meet the requirement (>=22.0.0). Please upgrade Node.js before continuing.
+
+If the Node version is satisfied but the CLI is not found, install it:
 
 ```bash
 npm config set @ycloud:registry https://npm.ycloud.com && npm install -g @ycloud/components-cli

@@ -37,13 +37,18 @@ allowed-tools:
 
 ## 初始化
 
-先检查 CLI 是否可用：
+先检查 Node 版本和 CLI 是否可用：
 
 ```bash
+node --version
 which ycc
 ```
 
-如果不存在，再安装：
+如果 Node 版本低于 `v22.0.0`，停止操作并告知用户：
+
+> 当前 Node.js 版本不满足要求（需要 >=22.0.0），请先升级 Node.js 后再继续。
+
+如果 Node 版本满足但 CLI 不存在，再安装：
 
 ```bash
 npm config set @ycloud:registry https://npm.ycloud.com && npm install -g @ycloud/components-cli

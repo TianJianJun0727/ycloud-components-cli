@@ -57,3 +57,7 @@ Core types in `src/types/index.ts`:
 ## Build Configuration
 
 Uses tsup with CommonJS output format. The `src/data` directory is copied to `dist` during build via `publicDir` config, making versioned JSON files available at runtime.
+
+## Skill Maintenance
+
+Each skill under `skills/` maintains both a Chinese (`SKILL.zh.md`) and English (`SKILL.md`) version. Whenever either version is modified, the other must be updated to keep them in sync.
