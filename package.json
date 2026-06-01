@@ -11,6 +11,10 @@
     "README.md",
     "skills"
   ],
+  "publishConfig": {
+    "registry": "https://npm.ycloud.com",
+    "tag": "beta"
+  },
   "scripts": {
     "dev": "cargo run --",
     "build": "cargo build --release && node scripts/copy-current-binary.mjs",
