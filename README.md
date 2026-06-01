@@ -120,27 +120,9 @@ cargo test
 # 构建
 pnpm build
 
-# 构建指定平台二进制
-pnpm build:darwin-arm64
-pnpm build:darwin-x64
-pnpm build:linux-x64
-pnpm build:windows-x64
-
-# 依次构建所有支持平台
-pnpm build:all
-
 # 本地测试
 ./dist/ycc <command>
 ```
-
-支持的发布二进制：
-
-| 平台 | Rust target | 输出路径 |
-|------|-------------|----------|
-| macOS Apple Silicon | `aarch64-apple-darwin` | `dist/darwin-arm64/ycc` |
-| macOS Intel | `x86_64-apple-darwin` | `dist/darwin-x64/ycc` |
-| Linux x64 | `x86_64-unknown-linux-gnu` | `dist/linux-x64/ycc` |
-| Windows x64 | `x86_64-pc-windows-msvc` | `dist/windows-x64/ycc.exe` |
 
 ## License
 

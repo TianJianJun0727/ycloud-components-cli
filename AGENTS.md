@@ -9,8 +9,7 @@
 当前实现以 Rust 为核心：
 
 - CLI 入口：`src/main.rs`
-- npm 启动器：`bin/ycc.js`
-- 多平台构建脚本：`scripts/`
+- npm 命令入口：`dist/ycc`
 - 测试：`tests/`
 
 ## 常用命令
@@ -22,18 +21,11 @@ cargo clippy -- -D warnings
 pnpm build
 ```
 
-发布前需要构建所有支持平台：
+发布前构建当前平台产物：
 
 ```bash
-pnpm build:all
+pnpm build
 ```
-
-支持的发布产物：
-
-- `dist/darwin-arm64/ycc`
-- `dist/darwin-x64/ycc`
-- `dist/linux-x64/ycc`
-- `dist/windows-x64/ycc.exe`
 
 ## 开发约定
 

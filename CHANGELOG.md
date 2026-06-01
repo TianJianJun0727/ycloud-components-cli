@@ -9,8 +9,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * 将 CLI 核心从 Node/TypeScript 迁移为 Rust 实现
 * 使用 Rust 标准目录结构，保留 `ycc` 对外命令名
-* 新增 macOS ARM、macOS Intel、Linux x64、Windows x64 多平台构建脚本
-* 新增 npm 平台启动器，根据当前系统选择对应 Rust 二进制
+* npm 包入口调整为当前平台 Rust 二进制 `dist/ycc`
 * 新增 `ycc config get/set metadataUrl`，支持配置 metadata 源
 * 将 metadata 配置与缓存目录迁移到 `~/.config/ycc`
 * 初始化 Codex 项目说明文件 `AGENTS.md`
@@ -18,7 +17,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Notes
 
-* 这是 v2 测试版本，正式发布前需要在各平台 runner 上执行 `pnpm build:all` 并验证产物
+* 这是 v2 测试版本，发布到私有源的 beta tag
 
 ## 1.2.0 (2026-04-13)
 

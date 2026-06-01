@@ -3,10 +3,9 @@
   "version": "2.0.0-beta.0",
   "description": "用于 @ycloud/components 组件库文档的CLI工具",
   "bin": {
-    "ycc": "./bin/ycc.js"
+    "ycc": "./dist/ycc"
   },
   "files": [
-    "bin",
     "dist",
     "README.md",
     "skills"
@@ -17,14 +16,9 @@
   },
   "scripts": {
     "dev": "cargo run --",
-    "build": "cargo build --release && node scripts/copy-current-binary.mjs",
-    "build:all": "node scripts/build-all-targets.mjs",
-    "build:darwin-arm64": "node scripts/build-target.mjs darwin-arm64 aarch64-apple-darwin",
-    "build:darwin-x64": "node scripts/build-target.mjs darwin-x64 x86_64-apple-darwin",
-    "build:linux-x64": "node scripts/build-target.mjs linux-x64 x86_64-unknown-linux-gnu",
-    "build:windows-x64": "node scripts/build-target.mjs windows-x64 x86_64-pc-windows-msvc",
-    "prepublishOnly": "npm run build:all",
-    "release": "npm run build:all && npm publish",
+    "build": "cargo build --release && mkdir -p dist && cp target/release/ycc dist/ycc",
+    "prepublishOnly": "npm run build",
+    "release": "npm publish",
     "version": "standard-version"
   },
   "keywords": [
