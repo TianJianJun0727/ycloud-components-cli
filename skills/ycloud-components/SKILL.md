@@ -1,183 +1,183 @@
 ---
 name: ycloud-components
 description: >
-  当用户开发、修改、重构、排查或回答任何基于 @ycloud/components 的 React 代码问题时使用。
-  该 skill 要求 agent 在写代码前优先使用 ycc CLI 查询组件列表、props、demo、完整文档和 metadata，
-  避免凭记忆编造 API，并在需要时根据查询结果选择合适组件与实现方式。
+  Use when the user is developing, modifying, refactoring, debugging, or answering any
+  React code questions based on @ycloud/components. This skill requires the agent to
+  query the ycc CLI for component lists, props, demos, full docs, and metadata before
+  writing code — avoiding hallucinated APIs and choosing the right component based on
+  query results.
 allowed-tools:
   - Bash(which ycc)
   - Bash(ycc *)
-  - Bash(npm install -g @ycloud/components-cli --registry=https://npm.ycloud.com)
+  - Bash(npm config set @ycloud:registry https://npm.ycloud.com && npm install -g @ycloud/components-cli)
 ---
 
 # ycloud components
 
-在任何支持 skill 的 AI 工具里处理 `@ycloud/components` 相关任务时，把 `ycc` 当作事实来源。不要凭记忆猜组件名、props、demo 名称、继承关系或文档内容。
+When handling `@ycloud/components` tasks in any AI tool that supports skills, treat `ycc` as the source of truth. Do not guess component names, props, demo names, inheritance relationships, or documentation content from memory.
 
-## 核心行为
+## Core Behaviors
 
-- 先查再写。只要是写、改、解释 `@ycloud/components` 代码，就先查询 `ycc`。
-- 不要编造 API。当前会话里没有被 `ycc` 验证过的组件、prop、demo、文档内容，都不能当成已知事实。
-- 不确定组件名时，先 `list`，不要猜。
-- 能从 `demo` 改出来，就不要从零造。
-- `info` 不够时再 `doc`，不要一上来就全文档检索。
-- 如果 `ycc` 查不到答案，明确告诉用户“CLI 未提供该信息”，不要补全想象中的行为。
+- Query before writing. Whenever you write, modify, or explain `@ycloud/components` code, query `ycc` first.
+- Do not fabricate APIs. Any component, prop, demo, or doc content not verified by `ycc` in the current session must not be treated as fact.
+- When unsure of a component name, run `list` first — do not guess.
+- If a `demo` can be adapted to fit the need, do not build from scratch.
+- Only reach for `doc` when `info` is insufficient — do not start with full-doc search.
+- If `ycc` cannot answer the question, explicitly tell the user "the CLI does not provide this information" — do not fill in imagined behavior.
 
-## 可用能力
+## Available Capabilities
 
-当前 CLI 以文档查询为主，真实可用命令只有：
+The CLI is primarily a documentation query tool. The only real commands available are:
 
-- `ycc list`：列出所有组件，用于发现组件名
-- `ycc info <Component>`：获取组件完整结构化信息，通常包含 `props`、`demos`、`whenToUse`、`bestPractices`、`faq`、`inheritMuiProps`
-- `ycc demo <Component> [demoName]`：获取组件指定 demo 代码
-- `ycc doc <Component>`：获取组件完整 markdown 文档
-- `ycc meta`：获取当前 metadata 版本和 `muiVersion`
+- `ycc list` — list all components, used to discover component names
+- `ycc info <Component>` — get full structured info for a component, typically includes `props`, `demos`, `whenToUse`, `bestPractices`, `faq`, `inheritMuiProps`
+- `ycc demo <Component> [demoName]` — get demo code for a component
+- `ycc doc <Component>` — get the full markdown documentation for a component
+- `ycc meta` — get the current metadata version and `muiVersion`
 
-不要引用不存在的 CLI 命令，例如 `token`、`changelog`、`migrate`、`lint`。
+Do not reference CLI commands that do not exist, such as `token`, `changelog`, `migrate`, or `lint`.
 
-## 初始化
+## Initialization
 
-先检查 CLI 是否可用：
+Check if the CLI is available:
 
 ```bash
 which ycc
 ```
 
-如果不存在，再安装：
+If not found, install it:
 
 ```bash
-npm install -g @ycloud/components-cli --registry=https://npm.ycloud.com
+npm config set @ycloud:registry https://npm.ycloud.com && npm install -g @ycloud/components-cli
 ```
 
-为了让输出稳定可解析，始终显式加上：
+To keep output stable and parseable, always explicitly add:
 
 ```bash
 --format json
 ```
 
-## 默认工作流
+## Default Workflow
 
-### 1. 写组件代码前
+### 1. Before writing component code
 
-只要用户要你“写一个页面 / 改一个表单 / 修一个组件 / 用 ycloud 实现某 UI”，按这个顺序执行：
+Whenever the user asks you to "build a page / update a form / fix a component / implement some UI with ycloud", follow this order:
 
-1. 从需求里识别候选组件。
-2. 如果组件名不确定，先运行 `ycc list --format json`。
-3. 对每个准备使用的组件运行 `ycc info <Component> --format json`。
-4. 需要实现范式或参考代码时，运行 `ycc demo <Component> [demoName] --format json`。
-5. 当 `info` 里的字段仍不足以回答问题时，再运行 `ycc doc <Component> --format json`。
-6. 根据查询结果写代码，而不是根据记忆写代码。
+1. Identify candidate components from the requirements.
+2. If component names are uncertain, run `ycc list --format json` first.
+3. Run `ycc info <Component> --format json` for each component you plan to use.
+4. When you need implementation patterns or reference code, run `ycc demo <Component> [demoName] --format json`.
+5. Only run `ycc doc <Component> --format json` when fields from `info` are still insufficient.
+6. Write code based on query results, not from memory.
 
-### 2. 改已有代码时
+### 2. When modifying existing code
 
-如果你要修改已有 tsx/jsx 文件：
+If you are editing an existing tsx/jsx file:
 
-1. 先读当前文件，确认里面实际用了哪些 `@ycloud/components` 组件。
-2. 对所有会被你修改到的组件逐个运行 `ycc info --format json`。
-3. 如果要调整交互、布局或示例写法，再补 `ycc demo`。
-4. 如果当前代码里出现你不认识的 prop，不要直接保留或删除；先用 `ycc info` 验证。
+1. Read the current file first to confirm which `@ycloud/components` components are actually used.
+2. Run `ycc info --format json` for each component you will touch.
+3. If adjusting interactions, layout, or example patterns, supplement with `ycc demo`.
+4. If you encounter an unfamiliar prop in the existing code, do not keep or remove it blindly — verify with `ycc info` first.
 
-### 3. 回答问题时
+### 3. When answering questions
 
-如果用户是在问“有没有这个 prop”“这个组件怎么用”“哪个组件适合这个场景”：
+If the user is asking "does this prop exist", "how do I use this component", or "which component fits this use case":
 
-- 先查 `ycc info`
-- 需要组件候选列表时查 `ycc list`
-- 需要例子时查 `ycc demo`
-- 需要完整说明时查 `ycc doc`
+- Query `ycc info` first
+- Query `ycc list` when you need a list of candidate components
+- Query `ycc demo` when you need examples
+- Query `ycc doc` when you need a full explanation
 
-回答时基于查询结果下结论，不要把经验当事实。
+Base your answers on query results — do not treat experience as fact.
 
-## 命令选择规则
+## Command Selection Rules
 
-### 不确定用什么组件
+### Unsure which component to use
 
 ```bash
 ycc list --format json
 ```
 
-先找出真实存在的组件，再决定方案。
+Find out which components actually exist before deciding on an approach.
 
-### 想知道组件支持哪些 props / demo / 用法
+### Want to know what props / demos / usage a component supports
 
 ```bash
 ycc info Button --format json
 ```
 
-`info` 是默认入口。大多数编码任务先查它，不要直接跳过。
+`info` is the default entry point. For most coding tasks, query it first — do not skip it.
 
-### 想拿可运行示例做起点
+### Want a runnable example as a starting point
 
 ```bash
 ycc demo Button basic --format json
 ```
 
-如果你不知道 demo 名，可以先：
+If you don't know the demo name, first run:
 
 ```bash
 ycc info Button --format json
 ```
 
-看 `demos` 列表后再取指定 demo；或者直接：
+Check the `demos` list, then fetch the specific demo. Or get all demos at once:
 
 ```bash
 ycc demo Button --format json
 ```
 
-获取全部 demo。
-
-### 需要完整文档、FAQ、长说明
+### Need full docs, FAQ, or long explanations
 
 ```bash
 ycc doc Button --format json
 ```
 
-只在 `info` 不能解决问题时使用。
+Only use this when `info` cannot resolve the question.
 
-### 需要确认 MUI 继承关系
+### Need to confirm MUI inheritance
 
-- 如果 `ycc info` 返回了 `inheritMuiProps` 字段，说明该组件继承了某个 MUI 组件的 props。
+- If `ycc info` returns an `inheritMuiProps` field, the component inherits props from a MUI component.
 
-这时：
+In that case:
 
-1. 先以 `ycc info` 返回结果为主
-2. 如果仍缺少关键信息，再运行 `ycc meta --format json` 确认 `muiVersion`
-3. 检查mui mcp 服务是否可用，若可用则调用mcp查对应版本的 MUI 文档
+1. Prioritize the `ycc info` result
+2. If key information is still missing, run `ycc meta --format json` to confirm `muiVersion`
+3. Check if the MUI MCP service is available; if so, use it to query the corresponding MUI version docs
 
-不要默认“最新 MUI 文档”一定适用。
+Do not assume the latest MUI docs always apply.
 
-- 如果 `ycc info` 没有返回 `inheritMuiProps` 字段，但 `ycc doc`中明确表示该组件继承自MUI的某个组件的props。
+- If `ycc info` does not return `inheritMuiProps`, but `ycc doc` explicitly states the component inherits props from a MUI component:
 
-这时：
+In that case:
 
-1. 先以 `ycc info` 及 `ycc doc` 返回结果为主
-2. 如果仍缺少关键信息，再运行 `ycc meta --format json` 确认 `muiVersion`
-3. 检查mui mcp 服务是否可用，若可用则调用mcp查对应版本的 MUI 文档
+1. Prioritize results from `ycc info` and `ycc doc`
+2. If key information is still missing, run `ycc meta --format json` to confirm `muiVersion`
+3. Check if the MUI MCP service is available; if so, use it to query the corresponding MUI version docs
 
-## AI agent 要主动做的事
+## What the AI Agent Should Do Proactively
 
-- 用户一旦提到 “ycloud components / @ycloud/components ”等组件开发任务，就主动先查 CLI，不要等用户提醒。
-- 用户让你“照着现有风格加一个功能”时，也要先验证相关组件 API，再动手改代码。
-- 如果需求里同时涉及多个组件，分别查询每个组件，不要只查一个就开始拼装。
-- 如果你准备使用某个 prop，但没有在 `ycc info` 中见到它，就停下来继续查询，不要直接写进代码。
-- 如果 `demo` 已经覆盖了用户要的模式，优先在 demo 基础上改，而不是重新设计 JSX 结构。
+- As soon as the user mentions a "ycloud components / @ycloud/components" development task, query the CLI proactively — do not wait for the user to remind you.
+- When the user asks you to "add a feature following the existing style", verify the relevant component APIs before touching the code.
+- If the requirements involve multiple components, query each one separately — do not query just one and start assembling.
+- If you are about to use a prop that you have not seen in `ycc info`, stop and keep querying — do not write it into the code.
+- If a `demo` already covers the pattern the user wants, prefer adapting the demo over redesigning the JSX structure from scratch.
 
-## 错误处理
+## Error Handling
 
-`ycc` 在 `--format json` 下出错时会输出 JSON 错误对象，并以非零退出码结束。常见错误码与处理方式：
+When `ycc` encounters an error under `--format json`, it outputs a JSON error object and exits with a non-zero code. Common error codes and how to handle them:
 
 - `COMPONENT_NOT_FOUND`
-  先运行 `ycc list --format json`，找到准确组件名后重试。
+  Run `ycc list --format json` to find the correct component name, then retry.
 - `COMPONENTS_DEMO_NOT_FOUND`
-  先运行 `ycc info <Component> --format json` 查看 demo 名，再重试；或直接 `ycc demo <Component> --format json`。
+  Run `ycc info <Component> --format json` to check available demo names, then retry; or run `ycc demo <Component> --format json` directly.
 - `DOCUMENT_NOT_FOUND`
-  说明没有完整文档，此时继续依赖 `info` 和 `demo`，不要编造缺失文档内容。
+  No full documentation exists. Continue relying on `info` and `demo` — do not fabricate missing doc content.
 - `METADATA_LOAD_ERROR`
-  告知用户当前 metadata 无法加载，停止猜测 API。
+  Inform the user that metadata cannot be loaded. Stop guessing at the API.
 - `UNKNOWN_ERROR`
-  直接暴露错误信息，不要继续基于不完整信息写代码。
+  Surface the error message directly. Do not continue writing code based on incomplete information.
 
-## 推荐查询模板
+## Recommended Query Templates
 
 ```bash
 ycc list --format json
@@ -187,11 +187,11 @@ ycc doc LoadingButton --format json
 ycc meta --format json
 ```
 
-## 输出要求
+## Output Requirements
 
-当你基于该 skill 完成任务时：
+When completing a task based on this skill:
 
-- 代码实现必须能追溯到刚刚查询过的 `ycc` 结果
-- 描述方案时，优先引用“查到的组件能力”和“查到的 demo 结构”
-- 如果某个行为只是推测，必须明确标注为推测
-- 如果 CLI 没提供答案，明确说缺口在哪里，而不是用常见组件库经验补齐
+- Code implementations must be traceable to `ycc` query results from the current session
+- When describing a solution, prioritize citing "queried component capabilities" and "queried demo structure"
+- If a behavior is only inferred, explicitly mark it as an inference
+- If the CLI did not provide an answer, clearly state where the gap is — do not fill it with general component library knowledge

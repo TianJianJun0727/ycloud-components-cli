@@ -34,7 +34,7 @@ export const printUpdateNotice = ({
       boxen(
         `🔔 New version available! ${chalk.redBright(currentVersion)} ➡️  ${chalk.greenBright(
           latestVersion,
-        )}.\n Run "${chalk.cyanBright(`npm install -g ${CLI_NAME}@latest`)} --registry=${NPM_REGISTRY_URL}" to update.`,
+        )}.\n Run "${chalk.cyanBright(`npm config set @ycloud:registry ${NPM_REGISTRY_URL} && npm install -g ${CLI_NAME}@latest`)}" to update.`,
         {
           padding: 1,
           margin: { top: 1, bottom: 1 },
