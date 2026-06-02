@@ -1,11 +1,21 @@
 # @ycloud/components-cli
 
-`ycc` 是 [@ycloud/components](https://npm.ycloud.com/-/web/detail/@ycloud/components) 的命令行文档查询工具，支持查看组件属性、示例代码、语义化 className，并提供 MCP 服务集成。
+`ycc` 是 @ycloud/components 的命令行文档查询工具，支持查看组件属性、示例代码、语义化 className，并提供 MCP 服务集成。
 
 ## 安装
 
 ```bash
-npm config set @ycloud:registry https://npm.ycloud.com && npm install -g @ycloud/components-cli
+curl -L -o ycc \
+  "https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/permalink/latest/downloads/bin/ycc-darwin-arm64"
+chmod +x ycc
+mv ycc ~/.local/bin/ycc
+```
+
+如果仓库是私有仓库，需要在下载时带上 GitLab token：
+
+```bash
+curl -L --header "PRIVATE-TOKEN: <token>" -o ycc \
+  "https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/permalink/latest/downloads/bin/ycc-darwin-arm64"
 ```
 
 ## 命令
@@ -118,11 +128,33 @@ cargo run -- <command>
 cargo test
 
 # 构建
-pnpm build
+cargo build --release
+mkdir -p dist
+cp target/release/ycc dist/ycc
 
 # 本地测试
 ./dist/ycc <command>
 ```
+
+## 发布
+
+当前发布流只构建并上传当前机器平台的二进制。
+
+```bash
+# 先 dry-run，确认构建产物和 GitLab URL
+DRY_RUN=1 scripts/release-gitlab.sh
+
+# 发布到 GitLab Generic Package Registry，并创建 Release 资产链接
+GITLAB_TOKEN=<token> scripts/release-gitlab.sh
+```
+
+默认发布：
+
+- 包名：`ycc`
+- 版本：读取 `Cargo.toml`
+- 标签：`v<version>`
+- 当前平台产物：`dist/ycc-<os>-<arch>`
+- 本地兼容产物：`dist/ycc`
 
 ## License
 

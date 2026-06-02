@@ -9,7 +9,7 @@
 当前实现以 Rust 为核心：
 
 - CLI 入口：`src/main.rs`
-- npm 命令入口：`dist/ycc`
+- 发布脚本：`scripts/release-gitlab.sh`
 - 测试：`tests/`
 
 ## 常用命令
@@ -18,18 +18,19 @@
 cargo fmt --check
 cargo test
 cargo clippy -- -D warnings
-pnpm build
+cargo build --release
 ```
 
 发布前构建当前平台产物：
 
 ```bash
-pnpm build
+DRY_RUN=1 scripts/release-gitlab.sh
 ```
 
 ## 开发约定
 
 - 保持 Rust 标准目录结构，不恢复旧 TypeScript CLI 结构。
+- 不使用 npm 发布或安装；发布产物上传到 GitLab Generic Package Registry，并通过 GitLab Release 下载。
 - 对外命令名保持 `ycc`。
 - metadata 默认源为 `https://ui.ycloud.com/metadata.json`。
 - metadata 源优先级：`YCC_META_DATA_URL` > `~/.config/ycc/config.json` 中的 `source` > 默认源。

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## Unreleased
+
+
+### Changes
+
+* 移除 npm 发布和安装流程
+* 新增单平台 GitLab Generic Package Registry 发布脚本
+* README 安装方式改为从 GitLab Release 下载二进制
+
 ## 2.0.0 (2026-06-02)
 
 
