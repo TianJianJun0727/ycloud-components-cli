@@ -10,14 +10,14 @@
 
 默认安装内容：
 
-- `ycc` 安装到 `~/.local/lib/ycc/ycc`
+- `ycc` 和内置 skills 安装到 `~/.local/share/ycc`
 - 命令软链到 `~/.local/bin/ycc`
 - 内置 skill 软链到 `~/.codex/skills` 和 `~/.claude/skills`
 
 可通过环境变量调整：
 
 ```bash
-YCC_INSTALL_ROOT=~/.local/lib/ycc \
+YCC_INSTALL_ROOT=~/.local/share/ycc \
 YCC_BIN_DIR=~/.local/bin \
 YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli/main/install.sh)"
@@ -27,7 +27,7 @@ YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
 
 ```bash
 rm -f ~/.local/bin/ycc
-rm -rf ~/.local/lib/ycc
+rm -rf ~/.local/share/ycc
 rm -f ~/.codex/skills/ycloud-components
 rm -f ~/.claude/skills/ycloud-components
 ```
