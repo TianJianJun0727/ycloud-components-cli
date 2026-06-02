@@ -34,7 +34,8 @@ if [[ "$OS" == "windows" ]]; then
   EXT=".exe"
 fi
 
-ASSET_NAME="${ASSET_NAME:-ycc-$OS-$ARCH$EXT}"
+BASE_NAME="${BASE_NAME:-ycc-$OS-$ARCH}"
+ASSET_NAME="${ASSET_NAME:-$BASE_NAME.tar.gz}"
 DIST_DIR="$ROOT_DIR/dist"
 DIST_FILE="$DIST_DIR/$ASSET_NAME"
 LOCAL_FILE="$DIST_DIR/ycc$EXT"
@@ -67,9 +68,9 @@ RELEASE_PAGE_URL="$GITLAB_URL/$PROJECT_PATH/-/releases/$TAG_NAME"
 echo "Building ycc $VERSION for $OS-$ARCH..."
 cargo build --release
 mkdir -p "$DIST_DIR"
-cp "target/release/ycc$EXT" "$DIST_FILE"
-cp "$DIST_FILE" "$LOCAL_FILE"
-chmod +x "$DIST_FILE" "$LOCAL_FILE"
+cp "target/release/ycc$EXT" "$LOCAL_FILE"
+chmod +x "$LOCAL_FILE"
+tar -C "$DIST_DIR" -czf "$DIST_FILE" "ycc$EXT"
 
 echo "Built: $DIST_FILE"
 echo "Package URL: $PACKAGE_URL"

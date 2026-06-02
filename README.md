@@ -5,11 +5,10 @@
 ## 安装
 
 ```bash
+mkdir -p ~/.local/bin
 glab api \
-  projects/sunkaicheng%2Fycloud-components-cli/packages/generic/ycc/v2.0.0/ycc-darwin-arm64 \
-  > ycc
-chmod +x ycc
-mv ycc ~/.local/bin/ycc
+  projects/sunkaicheng%2Fycloud-components-cli/packages/generic/ycc/v2.0.0/ycc-darwin-arm64.tar.gz \
+  | tar -xz -C ~/.local/bin ycc
 ```
 
 也可以从 GitLab Release 页面下载：
@@ -152,7 +151,7 @@ GITLAB_TOKEN=<token> scripts/release-gitlab.sh
 - 包名：`ycc`
 - 版本：读取 `Cargo.toml`
 - 标签：`v<version>`
-- 当前平台产物：`dist/ycc-<os>-<arch>`
+- 当前平台产物：`dist/ycc-<os>-<arch>.tar.gz`
 - 本地兼容产物：`dist/ycc`
 
 ## License
