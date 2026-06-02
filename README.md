@@ -2,6 +2,8 @@
 
 用于安装 `ycc` 命令和内置 skills。
 
+二进制归档通过 GitHub Releases 发布，安装脚本会按当前系统下载对应的 release asset。
+
 ## 安装
 
 ```bash

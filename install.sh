@@ -4,8 +4,7 @@ set -euo pipefail
 VERSION="${VERSION:-2.0.0}"
 PACKAGE_VERSION="${PACKAGE_VERSION:-v$VERSION}"
 GITHUB_REPO="${YCC_GITHUB_REPO:-TianJianJun0727/ycloud-components-cli}"
-GITHUB_REF="${YCC_GITHUB_REF:-main}"
-RAW_BASE_URL="${YCC_RAW_BASE_URL:-https://raw.githubusercontent.com/$GITHUB_REPO/$GITHUB_REF}"
+RELEASE_BASE_URL="${YCC_RELEASE_BASE_URL:-https://github.com/$GITHUB_REPO/releases/download}"
 INSTALL_ROOT="${YCC_INSTALL_ROOT:-$HOME/.local/share/ycc}"
 BIN_DIR="${YCC_BIN_DIR:-$HOME/.local/bin}"
 SKILL_TARGETS="${YCC_SKILL_TARGETS:-$HOME/.codex/skills:$HOME/.claude/skills}"
@@ -38,8 +37,8 @@ esac
 ASSET_NAME="ycc-$OS-$ARCH.tar.gz"
 TMP_DIR="$(mktemp -d)"
 ARCHIVE="$TMP_DIR/$ASSET_NAME"
-REPO_ARCHIVE="$ROOT_DIR/release-assets/$PACKAGE_VERSION/$ASSET_NAME"
-ARCHIVE_URL="$RAW_BASE_URL/release-assets/$PACKAGE_VERSION/$ASSET_NAME"
+REPO_ARCHIVE="$ROOT_DIR/$ASSET_NAME"
+ARCHIVE_URL="$RELEASE_BASE_URL/$PACKAGE_VERSION/$ASSET_NAME"
 
 cleanup() {
   rm -rf "$TMP_DIR"
