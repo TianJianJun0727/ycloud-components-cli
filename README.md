@@ -30,6 +30,20 @@ YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/install.sh)"
 ```
 
+## 更新
+
+```bash
+/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/update.sh)"
+```
+
+`update.sh` 会先检查本地已安装版本，版本一致时直接跳过；需要更新时会优先复用 `~/.cache/ycc/downloads` 中已下载的归档，避免重复下载。
+
+指定版本更新：
+
+```bash
+VERSION=2.0.1 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/update.sh)"
+```
+
 ## 卸载
 
 ```bash
