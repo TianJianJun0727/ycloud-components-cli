@@ -5,11 +5,9 @@
 ## 安装
 
 ```bash
-tmp_dir="$(mktemp -d)"
-git clone --depth 1 --branch research-gitlab-binary-release \
-  git@git.taovip.com:sunkaicheng/ycloud-components-cli.git \
-  "$tmp_dir/ycloud-components-cli"
-"$tmp_dir/ycloud-components-cli/scripts/install.sh"
+rm -rf ~/.local/share/ycc-installer
+git clone --depth 1 git@git.taovip.com:tianjianjun/ycloud-components-cli.git ~/.local/share/ycc-installer
+~/.local/share/ycc-installer/install.sh
 ```
 
 安装脚本默认会：
@@ -25,12 +23,8 @@ git clone --depth 1 --branch research-gitlab-binary-release \
 YCC_INSTALL_ROOT=~/.local/lib/ycc \
 YCC_BIN_DIR=~/.local/bin \
 YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
-bash install-ycc.sh
+~/.local/share/ycc-installer/install.sh
 ```
-
-也可以从 GitLab Release 页面手动查看发布资产：
-
-https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/v2.0.0
 
 ## 命令
 
