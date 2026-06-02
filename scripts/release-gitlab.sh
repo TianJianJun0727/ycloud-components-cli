@@ -7,6 +7,7 @@ cd "$ROOT_DIR"
 VERSION="${VERSION:-$(awk -F '"' '/^version = / { print $2; exit }' Cargo.toml)}"
 PACKAGE_NAME="${PACKAGE_NAME:-ycc}"
 TAG_NAME="${TAG_NAME:-v$VERSION}"
+PACKAGE_VERSION="${PACKAGE_VERSION:-$TAG_NAME}"
 REF="${REF:-$(git rev-parse HEAD)}"
 GITLAB_URL="${GITLAB_URL:-https://git.taovip.com}"
 REMOTE_URL="$(git remote get-url origin)"
@@ -59,9 +60,9 @@ PY
 )"
 fi
 
-PACKAGE_URL="$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$VERSION/$ASSET_NAME"
+PACKAGE_URL="$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$ASSET_NAME"
 RELEASE_API_URL="$GITLAB_URL/api/v4/projects/$PROJECT_ID/releases"
-RELEASE_ASSET_URL="$GITLAB_URL/$PROJECT_PATH/-/releases/$TAG_NAME/downloads/bin/$ASSET_NAME"
+RELEASE_PAGE_URL="$GITLAB_URL/$PROJECT_PATH/-/releases/$TAG_NAME"
 
 echo "Building ycc $VERSION for $OS-$ARCH..."
 cargo build --release
@@ -72,7 +73,7 @@ chmod +x "$DIST_FILE" "$LOCAL_FILE"
 
 echo "Built: $DIST_FILE"
 echo "Package URL: $PACKAGE_URL"
-echo "Release asset URL: $RELEASE_ASSET_URL"
+echo "Release page URL: $RELEASE_PAGE_URL"
 
 if [[ "$DRY_RUN" == "1" ]]; then
   echo "DRY_RUN=1, skip upload and release creation."
@@ -80,7 +81,18 @@ if [[ "$DRY_RUN" == "1" ]]; then
 fi
 
 if [[ -z "$TOKEN" ]]; then
-  echo "GITLAB_TOKEN or PRIVATE_TOKEN is required to upload and create the release." >&2
+  if command -v glab >/dev/null 2>&1 && glab auth status >/dev/null 2>&1; then
+    echo "GITLAB_TOKEN is not set; using glab authenticated release flow..."
+    glab release create "$TAG_NAME" "$DIST_FILE#$ASSET_NAME#package" \
+      --use-package-registry \
+      --package-name "$PACKAGE_NAME" \
+      --name "ycc $VERSION" \
+      --notes "ycc $VERSION single-platform $OS-$ARCH binary release." \
+      --ref "$REF"
+    echo "Release created or updated: $RELEASE_PAGE_URL"
+    exit 0
+  fi
+  echo "GITLAB_TOKEN or PRIVATE_TOKEN is required, unless glab is installed and authenticated." >&2
   exit 1
 fi
 
@@ -137,7 +149,7 @@ release_status="$(
 
 if [[ "$release_status" == "201" || "$release_status" == "200" ]]; then
   echo "Release created: $TAG_NAME"
-  echo "Download: $RELEASE_ASSET_URL"
+  echo "Release page: $RELEASE_PAGE_URL"
   exit 0
 fi
 

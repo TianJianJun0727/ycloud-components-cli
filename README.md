@@ -5,18 +5,16 @@
 ## 安装
 
 ```bash
-curl -L -o ycc \
-  "https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/permalink/latest/downloads/bin/ycc-darwin-arm64"
+glab api \
+  projects/sunkaicheng%2Fycloud-components-cli/packages/generic/ycc/v2.0.0/ycc-darwin-arm64 \
+  > ycc
 chmod +x ycc
 mv ycc ~/.local/bin/ycc
 ```
 
-如果仓库是私有仓库，需要在下载时带上 GitLab token：
+也可以从 GitLab Release 页面下载：
 
-```bash
-curl -L --header "PRIVATE-TOKEN: <token>" -o ycc \
-  "https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/permalink/latest/downloads/bin/ycc-darwin-arm64"
-```
+https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/v2.0.0
 
 ## 命令
 
@@ -144,7 +142,8 @@ cp target/release/ycc dist/ycc
 # 先 dry-run，确认构建产物和 GitLab URL
 DRY_RUN=1 scripts/release-gitlab.sh
 
-# 发布到 GitLab Generic Package Registry，并创建 Release 资产链接
+# 发布到 GitLab Generic Package Registry，并创建 Release 资产链接。
+# 如果本机已登录 glab，可以不传 GITLAB_TOKEN。
 GITLAB_TOKEN=<token> scripts/release-gitlab.sh
 ```
 
