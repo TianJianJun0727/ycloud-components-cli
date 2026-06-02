@@ -3,8 +3,9 @@ set -euo pipefail
 
 VERSION="${VERSION:-2.0.0}"
 PACKAGE_VERSION="${PACKAGE_VERSION:-v$VERSION}"
-INSTALLER_REPO_URL="${YCC_INSTALLER_REPO_URL:-git@git.taovip.com:tianjianjun/ycloud-components-cli.git}"
-INSTALLER_DIR="${YCC_INSTALLER_DIR:-$HOME/.local/share/ycc-installer}"
+GITHUB_REPO="${YCC_GITHUB_REPO:-TianJianJun0727/ycloud-components-cli}"
+GITHUB_REF="${YCC_GITHUB_REF:-main}"
+RAW_BASE_URL="${YCC_RAW_BASE_URL:-https://raw.githubusercontent.com/$GITHUB_REPO/$GITHUB_REF}"
 INSTALL_ROOT="${YCC_INSTALL_ROOT:-$HOME/.local/lib/ycc}"
 BIN_DIR="${YCC_BIN_DIR:-$HOME/.local/bin}"
 SKILL_TARGETS="${YCC_SKILL_TARGETS:-$HOME/.codex/skills:$HOME/.claude/skills}"
@@ -38,48 +39,24 @@ ASSET_NAME="ycc-$OS-$ARCH.tar.gz"
 TMP_DIR="$(mktemp -d)"
 ARCHIVE="$TMP_DIR/$ASSET_NAME"
 REPO_ARCHIVE="$ROOT_DIR/release-assets/$PACKAGE_VERSION/$ASSET_NAME"
+ARCHIVE_URL="$RAW_BASE_URL/release-assets/$PACKAGE_VERSION/$ASSET_NAME"
 
 cleanup() {
   rm -rf "$TMP_DIR"
 }
 trap cleanup EXIT
 
-ensure_installer_repo() {
-  if [[ -f "$REPO_ARCHIVE" ]]; then
-    return
-  fi
-
-  if ! command -v git >/dev/null 2>&1; then
-    echo "git is required to install ycc." >&2
-    exit 1
-  fi
-
-  echo "Preparing installer repository..."
-  if [[ -d "$INSTALLER_DIR/.git" ]]; then
-    git -C "$INSTALLER_DIR" fetch --depth 1 origin main
-    git -C "$INSTALLER_DIR" checkout -q main
-    git -C "$INSTALLER_DIR" reset --hard origin/main
-  else
-    rm -rf "$INSTALLER_DIR"
-    mkdir -p "$(dirname "$INSTALLER_DIR")"
-    git clone --depth 1 "$INSTALLER_REPO_URL" "$INSTALLER_DIR"
-  fi
-
-  ROOT_DIR="$INSTALLER_DIR"
-  REPO_ARCHIVE="$ROOT_DIR/release-assets/$PACKAGE_VERSION/$ASSET_NAME"
-}
-
 echo "Installing $ASSET_NAME..."
 if [[ -n "$LOCAL_ARCHIVE" ]]; then
   cp "$LOCAL_ARCHIVE" "$ARCHIVE"
+elif [[ -f "$REPO_ARCHIVE" ]]; then
+  cp "$REPO_ARCHIVE" "$ARCHIVE"
 else
-  ensure_installer_repo
-  if [[ ! -f "$REPO_ARCHIVE" ]]; then
-    echo "Release archive not found: $REPO_ARCHIVE" >&2
-    echo "Set YCC_ARCHIVE to a local archive path, or publish the archive into release-assets." >&2
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required to download $ARCHIVE_URL" >&2
     exit 1
   fi
-  cp "$REPO_ARCHIVE" "$ARCHIVE"
+  curl -fsSL "$ARCHIVE_URL" -o "$ARCHIVE"
 fi
 
 mkdir -p "$INSTALL_ROOT" "$BIN_DIR"
