@@ -5,13 +5,30 @@
 ## 安装
 
 ```bash
-mkdir -p ~/.local/bin
-glab api \
-  projects/sunkaicheng%2Fycloud-components-cli/packages/generic/ycc/v2.0.0/ycc-darwin-arm64.tar.gz \
-  | tar -xz -C ~/.local/bin ycc
+tmp_dir="$(mktemp -d)"
+git clone --depth 1 --branch research-gitlab-binary-release \
+  git@git.taovip.com:sunkaicheng/ycloud-components-cli.git \
+  "$tmp_dir/ycloud-components-cli"
+"$tmp_dir/ycloud-components-cli/scripts/install.sh"
 ```
 
-也可以从 GitLab Release 页面下载：
+安装脚本默认会：
+
+- 从仓库内的 `release-assets/v2.0.0/` 读取当前平台的 `ycc-<os>-<arch>.tar.gz`
+- 安装到 `~/.local/lib/ycc`
+- 创建命令链接 `~/.local/bin/ycc`
+- 将内置 skill 以软链方式初始化到 `~/.codex/skills` 和 `~/.claude/skills`
+
+可通过环境变量调整：
+
+```bash
+YCC_INSTALL_ROOT=~/.local/lib/ycc \
+YCC_BIN_DIR=~/.local/bin \
+YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
+bash install-ycc.sh
+```
+
+也可以从 GitLab Release 页面手动查看发布资产：
 
 https://git.taovip.com/sunkaicheng/ycloud-components-cli/-/releases/v2.0.0
 
@@ -152,6 +169,7 @@ GITLAB_TOKEN=<token> scripts/release-gitlab.sh
 - 版本：读取 `Cargo.toml`
 - 标签：`v<version>`
 - 当前平台产物：`dist/ycc-<os>-<arch>.tar.gz`
+- 产物内容：`ycc` 和内置 `skills/`
 - 本地兼容产物：`dist/ycc`
 
 ## License

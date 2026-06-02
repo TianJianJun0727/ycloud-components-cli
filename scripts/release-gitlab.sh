@@ -70,7 +70,7 @@ cargo build --release
 mkdir -p "$DIST_DIR"
 cp "target/release/ycc$EXT" "$LOCAL_FILE"
 chmod +x "$LOCAL_FILE"
-tar -C "$DIST_DIR" -czf "$DIST_FILE" "ycc$EXT"
+tar -C "$DIST_DIR" -czf "$DIST_FILE" "ycc$EXT" -C "$ROOT_DIR" skills
 
 echo "Built: $DIST_FILE"
 echo "Package URL: $PACKAGE_URL"

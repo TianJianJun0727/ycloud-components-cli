@@ -31,6 +31,7 @@ DRY_RUN=1 scripts/release-gitlab.sh
 
 - 保持 Rust 标准目录结构，不恢复旧 TypeScript CLI 结构。
 - 不使用 npm 发布或安装；发布产物上传到 GitLab Generic Package Registry，并通过 GitLab Release 下载。
+- 安装脚本需要同时安装二进制，并以软链方式初始化内置 skills。
 - 对外命令名保持 `ycc`。
 - metadata 默认源为 `https://ui.ycloud.com/metadata.json`。
 - metadata 源优先级：`YCC_META_DATA_URL` > `~/.config/ycc/config.json` 中的 `source` > 默认源。
