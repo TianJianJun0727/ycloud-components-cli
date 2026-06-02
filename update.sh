@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${VERSION:-2.0.1}"
+VERSION="${VERSION:-2.0.2}"
 PACKAGE_VERSION="${PACKAGE_VERSION:-v$VERSION}"
 GITHUB_REPO="${YCC_GITHUB_REPO:-TianJianJun0727/ycloud-components-cli-installer}"
 RELEASE_BASE_URL="${YCC_RELEASE_BASE_URL:-https://github.com/$GITHUB_REPO/releases/download}"
@@ -11,6 +11,7 @@ SKILL_TARGETS="${YCC_SKILL_TARGETS:-$HOME/.codex/skills:$HOME/.claude/skills}"
 FORCE_SKILLS="${YCC_FORCE_SKILLS:-1}"
 CACHE_DIR="${YCC_CACHE_DIR:-$HOME/.cache/ycc/downloads}"
 FORCE_UPDATE="${YCC_FORCE_UPDATE:-0}"
+MIGRATE_NPM="${YCC_MIGRATE_NPM:-1}"
 
 case "$(uname -s)" in
   Darwin) OS="darwin" ;;
@@ -36,6 +37,21 @@ if [[ "$FORCE_UPDATE" != "1" && "$CURRENT_VERSION" == "$VERSION" ]]; then
   echo "ycc $VERSION is already installed."
   exit 0
 fi
+
+migrate_npm_install() {
+  if [[ "$MIGRATE_NPM" != "1" ]]; then
+    return
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    return
+  fi
+
+  if npm list -g @ycloud/components-cli --depth=0 >/dev/null 2>&1; then
+    echo "Removing old npm installation: @ycloud/components-cli"
+    npm uninstall -g @ycloud/components-cli >/dev/null
+  fi
+}
 
 ASSET_NAME="ycc-$OS-$ARCH.tar.gz"
 ARCHIVE_URL="$RELEASE_BASE_URL/$PACKAGE_VERSION/$ASSET_NAME"
@@ -63,6 +79,7 @@ mkdir -p "$INSTALL_ROOT" "$BIN_DIR"
 tar -xzf "$CACHED_ARCHIVE" -C "$INSTALL_ROOT"
 chmod +x "$INSTALL_ROOT/ycc"
 ln -sf "$INSTALL_ROOT/ycc" "$BIN_DIR/ycc"
+migrate_npm_install
 
 echo "Installed ycc to $INSTALL_ROOT/ycc"
 echo "Linked command to $BIN_DIR/ycc"

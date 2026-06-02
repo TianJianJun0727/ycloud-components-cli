@@ -20,6 +20,7 @@
 - `ycc` 和内置 skills 安装到 `~/.local/share/ycc`
 - 命令软链到 `~/.local/bin/ycc`
 - 内置 skill 软链到 `~/.codex/skills` 和 `~/.claude/skills`
+- 如果检测到旧版 npm 全局包 `@ycloud/components-cli`，默认自动卸载，避免 PATH 继续命中旧版 `ycc`
 
 可通过环境变量调整：
 
@@ -28,6 +29,12 @@ YCC_INSTALL_ROOT=~/.local/share/ycc \
 YCC_BIN_DIR=~/.local/bin \
 YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/install.sh)"
+```
+
+保留旧版 npm 全局包：
+
+```bash
+YCC_MIGRATE_NPM=0 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/install.sh)"
 ```
 
 ## 更新
@@ -41,11 +48,17 @@ YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
 指定版本更新：
 
 ```bash
-VERSION=2.0.1 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/update.sh)"
+VERSION=2.0.2 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/update.sh)"
 ```
 
 ## 卸载
 
 ```bash
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/uninstall.sh)"
+```
+
+卸载脚本也会默认清理旧版 npm 全局包 `@ycloud/components-cli`。如需保留：
+
+```bash
+YCC_MIGRATE_NPM=0 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/uninstall.sh)"
 ```
