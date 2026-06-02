@@ -5,9 +5,7 @@
 ## 安装
 
 ```bash
-rm -rf ~/.local/share/ycc-installer
-git clone --depth 1 git@git.taovip.com:tianjianjun/ycloud-components-cli.git ~/.local/share/ycc-installer
-~/.local/share/ycc-installer/install.sh
+/bin/zsh -c "$(curl -fsSL https://git.taovip.com/tianjianjun/ycloud-components-cli/-/raw/main/install.sh)"
 ```
 
 默认安装内容：
@@ -22,7 +20,7 @@ git clone --depth 1 git@git.taovip.com:tianjianjun/ycloud-components-cli.git ~/.
 YCC_INSTALL_ROOT=~/.local/lib/ycc \
 YCC_BIN_DIR=~/.local/bin \
 YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
-~/.local/share/ycc-installer/install.sh
+/bin/zsh -c "$(curl -fsSL https://git.taovip.com/tianjianjun/ycloud-components-cli/-/raw/main/install.sh)"
 ```
 
 ## 卸载
