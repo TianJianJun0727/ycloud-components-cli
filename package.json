@@ -1,6 +1,6 @@
 {
   "name": "@ycloud/components-cli",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "description": "用于 @ycloud/components 组件库文档的CLI工具",
   "bin": {
     "ycc": "./dist/ycc"
@@ -12,7 +12,7 @@
   ],
   "publishConfig": {
     "registry": "https://npm.ycloud.com",
-    "tag": "beta"
+    "tag": "latest"
   },
   "scripts": {
     "dev": "cargo run --",

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.0.0 (2026-06-02)
+
+
+### Features
+
+* 将 CLI 核心从 Node/TypeScript 迁移为 Rust 实现
+* 使用 Rust 标准目录结构，保留 `ycc` 对外命令名
+* npm 包入口调整为当前平台 Rust 二进制 `dist/ycc`
+* 新增 `ycc config get/set source`，支持持久配置 metadata 源
+* 将 metadata 配置与缓存目录迁移到 `~/.config/ycc`
+* 将 `ycc demo <component> [demoName]` 的可选参数名改为 `name`
+* 将 MCP 工具 `ycc_demo` 的可选参数从 `demoName` 改为 `name`
+* 初始化 Codex 项目说明文件 `AGENTS.md`
+
+
+### Notes
+
+* `YCC_META_DATA_URL` 仍作为临时环境变量覆盖源
+
 ## 2.0.0-beta.1 (2026-06-02)
 
 
