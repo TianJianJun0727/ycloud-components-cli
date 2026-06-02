@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="${VERSION:-2.0.3}"
+VERSION="${VERSION:-2.0.4}"
 PACKAGE_VERSION="${PACKAGE_VERSION:-v$VERSION}"
 GITHUB_REPO="${YCC_GITHUB_REPO:-TianJianJun0727/ycloud-components-cli-installer}"
 RELEASE_BASE_URL="${YCC_RELEASE_BASE_URL:-https://github.com/$GITHUB_REPO/releases/download}"
