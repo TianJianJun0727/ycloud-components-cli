@@ -32,6 +32,6 @@ pnpm build
 - 保持 Rust 标准目录结构，不恢复旧 TypeScript CLI 结构。
 - 对外命令名保持 `ycc`。
 - metadata 默认源为 `https://ui.ycloud.com/metadata.json`。
-- metadata 源优先级：`YCC_META_DATA_URL` > `~/.config/ycc/config.json` > 默认源。
+- metadata 源优先级：`YCC_META_DATA_URL` > `~/.config/ycc/config.json` 中的 `source` > 默认源。
 - metadata 缓存默认写入 `~/.config/ycc/cache/metadata.json`。
 - 修改命令行为时同步更新测试和 README。

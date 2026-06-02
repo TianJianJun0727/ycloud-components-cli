@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.0.0-beta.1 (2026-06-02)
+
+
+### Breaking Changes
+
+* 将持久配置字段和命令参数从 `metadataUrl` 改为 `source`
+* 移除 `metadataUrl`、`metadata-url`、`metaSource`、`meta-source` 配置命令兼容别名
+* 将 `ycc demo <component> [demoName]` 的可选参数名改为 `name`
+* 将 MCP 工具 `ycc_demo` 的可选参数从 `demoName` 改为 `name`
+
+
+### Notes
+
+* 临时环境变量覆盖仍使用 `YCC_META_DATA_URL`
+
 ## 2.0.0-beta.0 (2026-06-01)
 
 

@@ -26,7 +26,7 @@ ycc list
 ycc info Button
 ```
 
-### `ycc demo <component> [demoName]`
+### `ycc demo <component> [name]`
 
 获取组件的示例代码。
 
@@ -42,16 +42,16 @@ ycc demo Button basic
 ycc meta
 ```
 
-### `ycc config get/set metadataUrl`
+### `ycc config get/set source`
 
 查看或配置元数据源。默认源为 `https://ui.ycloud.com/metadata.json`。
 
 ```bash
 # 查看当前生效的元数据源
-ycc config get metadataUrl
+ycc config get source
 
 # 设置长期使用的元数据源
-ycc config set metadataUrl https://example.com/metadata.json
+ycc config set source https://example.com/metadata.json
 ```
 
 ### `ycc doc <component>`
@@ -104,7 +104,7 @@ ycc skill install ~/.codex/skills --force
 | `YCC_USE_LOCAL_META_DATA` | 使用本地元数据（开发用） | `false` |
 | `YCC_SKIP_UPDATE_CHECK` | 跳过版本更新检测 | `false` |
 
-元数据源优先级：`YCC_META_DATA_URL` 环境变量 > `~/.config/ycc/config.json` 中的 `metadataUrl` > 默认源。
+元数据源优先级：`YCC_META_DATA_URL` 环境变量 > `~/.config/ycc/config.json` 中的 `source` > 默认源。
 
 元数据缓存默认写入 `~/.config/ycc/cache/metadata.json`。如果设置了 `XDG_CONFIG_HOME`，则写入 `$XDG_CONFIG_HOME/ycc/cache/metadata.json`。
 

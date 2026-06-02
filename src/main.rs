@@ -107,11 +107,8 @@ fn run(args: Vec<String>) -> Result<(), CliError> {
         }
         "demo" => {
             let component_name = require_arg(&parsed.positionals, 0, "component")?;
-            let demo_name = parsed.positionals.get(1).map(String::as_str);
-            output(
-                &component_demo_code(component_name, demo_name)?,
-                parsed.format,
-            )
+            let name = parsed.positionals.get(1).map(String::as_str);
+            output(&component_demo_code(component_name, name)?, parsed.format)
         }
         "doc" => {
             let component_name = require_arg(&parsed.positionals, 0, "component")?;
@@ -286,7 +283,7 @@ fn configured_metadata_url() -> Option<String> {
         .ok()
         .and_then(|config| {
             config
-                .get("metadataUrl")
+                .get("source")
                 .and_then(Value::as_str)
                 .map(str::trim)
                 .map(str::to_string)
@@ -451,21 +448,21 @@ fn load_component(component_name: &str) -> Result<Value, CliError> {
         })
 }
 
-fn component_demo_code(component_name: &str, demo_name: Option<&str>) -> Result<Value, CliError> {
+fn component_demo_code(component_name: &str, name: Option<&str>) -> Result<Value, CliError> {
     let component = load_component(component_name)?;
     let demos = component
         .get("demos")
         .and_then(Value::as_array)
         .ok_or_else(|| CliError::new("COMPONENTS_DEMO_NOT_FOUND", "Component has no demos"))?;
 
-    if let Some(demo_name) = demo_name {
+    if let Some(name) = name {
         let demo = demos
             .iter()
-            .find(|demo| demo.get("name").and_then(Value::as_str) == Some(demo_name))
+            .find(|demo| demo.get("name").and_then(Value::as_str) == Some(name))
             .ok_or_else(|| {
                 CliError::new(
                     "COMPONENTS_DEMO_NOT_FOUND",
-                    format!("Demo {demo_name} not found for {component_name}"),
+                    format!("Demo {name} not found for {component_name}"),
                 )
             })?;
         return Ok(demo.get("code").cloned().unwrap_or(Value::Null));
@@ -502,21 +499,21 @@ fn handle_config(parsed: &ParsedArgs) -> Result<(), CliError> {
         parsed.positionals.first().map(String::as_str),
         parsed.positionals.get(1).map(String::as_str),
     ) {
-        (Some("get"), Some(key)) if is_metadata_url_key(key) => output(
+        (Some("get"), Some("source")) => output(
             &json!({
-                "metadataUrl": metadata_url(),
+                "source": metadata_url(),
                 "configFile": config_file(),
             }),
             parsed.format,
         ),
-        (Some("set"), Some(key)) if is_metadata_url_key(key) => {
+        (Some("set"), Some("source")) => {
             let value = require_arg(&parsed.positionals, 2, "value")?;
             let mut config = read_config()?;
-            config["metadataUrl"] = Value::String(value.to_string());
+            config["source"] = Value::String(value.to_string());
             write_config(&config)?;
             output(
                 &json!({
-                    "metadataUrl": value,
+                    "source": value,
                     "configFile": config_file(),
                 }),
                 parsed.format,
@@ -524,16 +521,9 @@ fn handle_config(parsed: &ParsedArgs) -> Result<(), CliError> {
         }
         _ => Err(CliError::new(
             "UNKNOWN_ERROR",
-            "Only `ycc config get metadataUrl` and `ycc config set metadataUrl <url>` are supported",
+            "Only `ycc config get source` and `ycc config set source <value>` are supported",
         )),
     }
-}
-
-fn is_metadata_url_key(key: &str) -> bool {
-    matches!(
-        key,
-        "metadataUrl" | "metadata-url" | "metaSource" | "meta-source"
-    )
 }
 
 fn handle_skill(parsed: &ParsedArgs) -> Result<(), CliError> {
@@ -835,7 +825,7 @@ fn handle_mcp_request(request: &Value) -> Value {
                     },
                     {
                         "name": "ycc_demo",
-                        "description": "Get demo code examples for a specific @ycloud/components component. Returns all demos if demoName is not specified.",
+                        "description": "Get demo code examples for a specific @ycloud/components component. Returns all demos if name is not specified.",
                         "inputSchema": {
                             "$schema": "http://json-schema.org/draft-07/schema#",
                             "type": "object",
@@ -844,7 +834,7 @@ fn handle_mcp_request(request: &Value) -> Value {
                                     "type": "string",
                                     "description": "Component name (e.g., Button, Input)"
                                 },
-                                "demoName": {
+                                "name": {
                                     "description": "Specific demo name to retrieve (optional)",
                                     "type": "string"
                                 }
@@ -921,8 +911,8 @@ fn call_mcp_tool(name: &str, args: &Value) -> Result<Value, CliError> {
                 .get("component")
                 .and_then(Value::as_str)
                 .ok_or_else(|| CliError::new("UNKNOWN_ERROR", "Missing component"))?;
-            let demo_name = args.get("demoName").and_then(Value::as_str);
-            component_demo_code(component, demo_name)
+            let name = args.get("name").and_then(Value::as_str);
+            component_demo_code(component, name)
         }
         "ycc_doc" => {
             let component = args
@@ -1029,10 +1019,10 @@ fn print_help() {
     println!("Commands:");
     println!("  ycc list                         List all components");
     println!("  ycc info <component>             Show component properties");
-    println!("  ycc demo <component> [demoName]  Get component demo code");
+    println!("  ycc demo <component> [name]      Get component demo code");
     println!("  ycc meta                         Show metadata info (version, muiVersion)");
-    println!("  ycc config get metadataUrl       Show the effective metadata source");
-    println!("  ycc config set metadataUrl <url> Configure the metadata source");
+    println!("  ycc config get source            Show the effective metadata source");
+    println!("  ycc config set source <value>    Configure the metadata source");
     println!("  ycc doc <component>              Get full documentation for a component");
     println!("  ycc mcp                          Start MCP (Model Context Protocol) server for");
     println!("                                   AI assistant integration");
