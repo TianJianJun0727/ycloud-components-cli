@@ -5,8 +5,10 @@
 ## 安装
 
 ```bash
-/bin/zsh -c "$(curl -fsSL https://git.taovip.com/tianjianjun/ycloud-components-cli/-/raw/main/install.sh)"
+/bin/zsh -c "$(git archive --remote=git@git.taovip.com:tianjianjun/ycloud-components-cli.git main install.sh | tar -xO install.sh)"
 ```
+
+该命令通过 SSH 读取安装脚本，适用于私有 GitLab 仓库；请先确保本机 SSH key 已能访问 `git.taovip.com`。
 
 默认安装内容：
 
@@ -20,7 +22,7 @@
 YCC_INSTALL_ROOT=~/.local/lib/ycc \
 YCC_BIN_DIR=~/.local/bin \
 YCC_SKILL_TARGETS="$HOME/.codex/skills:$HOME/.claude/skills" \
-/bin/zsh -c "$(curl -fsSL https://git.taovip.com/tianjianjun/ycloud-components-cli/-/raw/main/install.sh)"
+/bin/zsh -c "$(git archive --remote=git@git.taovip.com:tianjianjun/ycloud-components-cli.git main install.sh | tar -xO install.sh)"
 ```
 
 ## 卸载
