@@ -18,7 +18,7 @@
 默认安装内容：
 
 - `ycc` 直接安装到 `~/.local/bin/ycc`
-- 如果当前 PATH 不包含安装目录，会自动写入 `~/.zshrc` 或 `~/.bashrc`
+- 如果 shell 配置中没有安装目录，会自动写入 `~/.zshrc` 或 `~/.bashrc` 并在脚本内加载
 - 如果检测到旧版 npm 全局包 `@ycloud/components-cli`，默认自动卸载，避免 PATH 继续命中旧版 `ycc`
 
 可通过环境变量调整：
@@ -54,7 +54,7 @@ VERSION=2.0.3 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJi
 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/uninstall.sh)"
 ```
 
-卸载脚本也会默认清理旧版 npm 全局包 `@ycloud/components-cli`。如需保留：
+卸载脚本只会删除 `ycc` 自己写入的 PATH 配置，不会删除用户手动维护的其它 PATH。卸载脚本也会默认清理旧版 npm 全局包 `@ycloud/components-cli`。如需保留：
 
 ```bash
 YCC_MIGRATE_NPM=0 /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/TianJianJun0727/ycloud-components-cli-installer/main/uninstall.sh)"

@@ -68,18 +68,37 @@ shell_profile() {
   esac
 }
 
-ensure_path() {
+reload_path() {
+  local profile="$1"
   case ":$PATH:" in
-    *":$BIN_DIR:"*) return ;;
+    *":$BIN_DIR:"*) ;;
+    *) export PATH="$BIN_DIR:$PATH" ;;
   esac
 
+  if [[ -f "$profile" ]]; then
+    set +u
+    source "$profile" >/dev/null 2>&1 || true
+    set -u
+  fi
+}
+
+ensure_path() {
   local profile
   local path_line
   profile="$(shell_profile)"
   path_line="$(path_line_for_bin_dir)"
 
   touch "$profile"
-  if ! grep -Fqx "$path_line" "$profile"; then
+  if grep -Fqx "$path_line" "$profile"; then
+    reload_path "$profile"
+    return
+  fi
+
+  if ! awk -v line="$path_line" '
+    previous == "# ycc" && $0 == line { found = 1 }
+    { previous = $0 }
+    END { exit found ? 0 : 1 }
+  ' "$profile"; then
     {
       printf '\n# ycc\n'
       printf '%s\n' "$path_line"
@@ -87,7 +106,11 @@ ensure_path() {
     echo "Added $BIN_DIR to PATH in $profile"
   fi
 
-  echo "Open a new terminal or run: source \"$profile\""
+  reload_path "$profile"
+  case ":$PATH:" in
+    *":$BIN_DIR:"*) ;;
+    *) echo "Open a new terminal or run: source \"$profile\"" ;;
+  esac
 }
 
 migrate_npm_install

@@ -6,6 +6,75 @@ MIGRATE_NPM="${YCC_MIGRATE_NPM:-1}"
 
 COMMAND_LINK="$BIN_DIR/ycc"
 
+path_line_for_bin_dir() {
+  if [[ "$BIN_DIR" == "$HOME/.local/bin" ]]; then
+    printf 'export PATH="$HOME/.local/bin:$PATH"\n'
+  else
+    printf 'export PATH="%s:$PATH"\n' "$BIN_DIR"
+  fi
+}
+
+shell_profile() {
+  case "$(basename "${SHELL:-}")" in
+    zsh) printf '%s\n' "$HOME/.zshrc" ;;
+    bash) printf '%s\n' "$HOME/.bashrc" ;;
+    *)
+      if [[ -f "$HOME/.zshrc" ]]; then
+        printf '%s\n' "$HOME/.zshrc"
+      elif [[ -f "$HOME/.bashrc" ]]; then
+        printf '%s\n' "$HOME/.bashrc"
+      else
+        printf '%s\n' "$HOME/.zshrc"
+      fi
+      ;;
+  esac
+}
+
+remove_managed_path() {
+  local profile
+  local path_line
+  local tmp_file
+  local status
+  profile="$(shell_profile)"
+  path_line="$(path_line_for_bin_dir)"
+
+  if [[ ! -f "$profile" ]]; then
+    return
+  fi
+
+  tmp_file="$(mktemp)"
+  set +e
+  awk -v line="$path_line" '
+    previous == "# ycc" && $0 == line {
+      previous = ""
+      removed = 1
+      next
+    }
+    previous != "" {
+      print previous
+    }
+    { previous = $0 }
+    END {
+      if (previous != "") {
+        print previous
+      }
+      exit removed ? 0 : 2
+    }
+  ' "$profile" > "$tmp_file"
+  status=$?
+  set -e
+
+  case "$status" in
+    0)
+      mv "$tmp_file" "$profile"
+      echo "Removed ycc PATH entry from $profile"
+      ;;
+    2)
+      rm -f "$tmp_file"
+      ;;
+  esac
+}
+
 remove_npm_install() {
   if [[ "$MIGRATE_NPM" != "1" ]]; then
     return
@@ -27,5 +96,7 @@ if [[ -L "$COMMAND_LINK" || -f "$COMMAND_LINK" ]]; then
 fi
 
 remove_npm_install
+
+remove_managed_path
 
 echo "ycc uninstalled."
