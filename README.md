@@ -18,6 +18,7 @@
 默认安装内容：
 
 - `ycc` 直接安装到 `~/.local/bin/ycc`
+- 如果当前 PATH 不包含安装目录，会自动写入 `~/.zshrc` 或 `~/.bashrc`
 - 如果检测到旧版 npm 全局包 `@ycloud/components-cli`，默认自动卸载，避免 PATH 继续命中旧版 `ycc`
 
 可通过环境变量调整：

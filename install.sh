@@ -57,6 +57,52 @@ migrate_npm_install() {
   fi
 }
 
+path_line_for_bin_dir() {
+  if [[ "$BIN_DIR" == "$HOME/.local/bin" ]]; then
+    printf 'export PATH="$HOME/.local/bin:$PATH"\n'
+  else
+    printf 'export PATH="%s:$PATH"\n' "$BIN_DIR"
+  fi
+}
+
+shell_profile() {
+  case "$(basename "${SHELL:-}")" in
+    zsh) printf '%s\n' "$HOME/.zshrc" ;;
+    bash) printf '%s\n' "$HOME/.bashrc" ;;
+    *)
+      if [[ -f "$HOME/.zshrc" ]]; then
+        printf '%s\n' "$HOME/.zshrc"
+      elif [[ -f "$HOME/.bashrc" ]]; then
+        printf '%s\n' "$HOME/.bashrc"
+      else
+        printf '%s\n' "$HOME/.zshrc"
+      fi
+      ;;
+  esac
+}
+
+ensure_path() {
+  case ":$PATH:" in
+    *":$BIN_DIR:"*) return ;;
+  esac
+
+  local profile
+  local path_line
+  profile="$(shell_profile)"
+  path_line="$(path_line_for_bin_dir)"
+
+  touch "$profile"
+  if ! grep -Fqx "$path_line" "$profile"; then
+    {
+      printf '\n# ycc\n'
+      printf '%s\n' "$path_line"
+    } >> "$profile"
+    echo "Added $BIN_DIR to PATH in $profile"
+  fi
+
+  echo "Open a new terminal or run: source \"$profile\""
+}
+
 echo "Installing $ASSET_NAME..."
 if [[ -n "$LOCAL_ARCHIVE" ]]; then
   cp "$LOCAL_ARCHIVE" "$ARCHIVE"
@@ -75,6 +121,7 @@ tar -xzf "$ARCHIVE" -C "$TMP_DIR"
 rm -f "$BIN_DIR/ycc"
 install -m 0755 "$TMP_DIR/ycc" "$BIN_DIR/ycc"
 migrate_npm_install
+ensure_path
 
 echo "Installed ycc to $BIN_DIR/ycc"
 
