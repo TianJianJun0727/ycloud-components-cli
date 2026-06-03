@@ -6,6 +6,10 @@ MIGRATE_NPM="${YCC_MIGRATE_NPM:-1}"
 
 COMMAND_LINK="$BIN_DIR/ycc"
 
+detected_ycc() {
+  command -v ycc 2>/dev/null || true
+}
+
 path_line_for_bin_dir() {
   if [[ "$BIN_DIR" == "$HOME/.local/bin" ]]; then
     printf 'export PATH="$HOME/.local/bin:$PATH"\n'
@@ -34,7 +38,7 @@ remove_managed_path() {
   local profile
   local path_line
   local tmp_file
-  local status
+  local awk_status
   profile="$(shell_profile)"
   path_line="$(path_line_for_bin_dir)"
 
@@ -61,10 +65,10 @@ remove_managed_path() {
       exit removed ? 0 : 2
     }
   ' "$profile" > "$tmp_file"
-  status=$?
+  awk_status=$?
   set -e
 
-  case "$status" in
+  case "$awk_status" in
     0)
       mv "$tmp_file" "$profile"
       echo "Removed ycc PATH entry from $profile"
@@ -73,6 +77,25 @@ remove_managed_path() {
       rm -f "$tmp_file"
       ;;
   esac
+}
+
+remove_command() {
+  local detected
+  detected="$(detected_ycc)"
+  if [[ -n "$detected" ]]; then
+    echo "Detected ycc: $detected"
+  fi
+
+  if [[ -L "$COMMAND_LINK" || -f "$COMMAND_LINK" ]]; then
+    rm -f "$COMMAND_LINK"
+    echo "Removed command: $COMMAND_LINK"
+    return
+  fi
+
+  if [[ -n "$detected" && "$detected" == "$COMMAND_LINK" ]]; then
+    rm -f "$detected"
+    echo "Removed command: $detected"
+  fi
 }
 
 remove_npm_install() {
@@ -90,10 +113,7 @@ remove_npm_install() {
   fi
 }
 
-if [[ -L "$COMMAND_LINK" || -f "$COMMAND_LINK" ]]; then
-  rm -f "$COMMAND_LINK"
-  echo "Removed command: $COMMAND_LINK"
-fi
+remove_command
 
 remove_npm_install
 
